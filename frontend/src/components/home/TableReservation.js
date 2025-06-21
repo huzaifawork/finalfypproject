@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FiUsers, FiMapPin, FiClock, FiInfo, FiStar, FiTarget, FiShoppingCart, FiEye } from "react-icons/fi";
+import {
+  FiUsers,
+  FiMapPin,
+  FiClock,
+  FiInfo,
+  FiStar,
+  FiTarget,
+  FiShoppingCart,
+  FiEye
+} from "react-icons/fi";
 import { tableRecommendationService, tableUtils } from "../../services/tableRecommendationService";
-import { API_BASE_URL } from "../../config/api";
 
 const TableReservation = () => {
   const [tables, setTables] = useState([]);
@@ -11,40 +19,33 @@ const TableReservation = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredTable, setHoveredTable] = useState(null);
-  // Removed unused state variables
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     checkAuthStatus();
     fetchTables();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkAuthStatus = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   };
 
   const fetchTables = async () => {
     try {
-      // Always fetch regular tables first as fallback
-      console.log('Fetching tables from:', `${API_BASE_URL}/api/tables`);
-      const tablesResponse = await axios.get(`${API_BASE_URL}/api/tables`);
-      console.log('Fetched tables:', tablesResponse.data);
-
+      const tablesResponse = await axios.get("http://localhost:8080/api/tables");
       if (tablesResponse.data && tablesResponse.data.length > 0) {
         const regularTables = tablesResponse.data.slice(0, 3);
         setTables(regularTables);
 
-        // Simply use regular tables for everyone - no recommendations
-        console.log('Using regular tables for featured tables');
-        const featuredTables = regularTables.map(table => ({
+        const featuredTables = regularTables.map((table) => ({
           ...table,
           isRecommendation: false
         }));
         setRecommendations(featuredTables);
       }
     } catch (error) {
-      console.error('Error fetching tables:', error);
+      console.error("Error fetching tables:", error);
       setError("Failed to load tables");
     } finally {
       setLoading(false);
@@ -53,34 +54,25 @@ const TableReservation = () => {
 
   const recordInteraction = async (tableId, interactionType) => {
     if (!isLoggedIn) return;
-
     try {
       await tableRecommendationService.recordInteraction({
         tableId,
         interactionType,
-        source: 'home_page'
+        source: "home_page"
       });
     } catch (error) {
-      console.error('Error recording interaction:', error);
+      console.error("Error recording interaction:", error);
     }
   };
 
   const getCurrentTables = () => {
-    // Always prioritize recommendations if available, otherwise use regular tables
-    if (recommendations.length > 0) {
-      console.log('Using recommendations:', recommendations.length);
-      return recommendations.slice(0, 3);
-    }
-    console.log('Using regular tables:', tables.length);
-    return tables.slice(0, 3);
+    return recommendations.length > 0
+      ? recommendations.slice(0, 3)
+      : tables.slice(0, 3);
   };
 
-  // Removed unused slider functions since we're showing only 3 tables
-
-  // Using tableUtils.getImageUrl instead
-
   const currentTables = getCurrentTables();
-  const visibleTables = currentTables; // Show all 3 without sliding
+  const visibleTables = currentTables;
 
   if (loading) {
     return (
@@ -126,100 +118,47 @@ const TableReservation = () => {
 
   return (
     <>
-      <style>
-        {`
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-          }
-          @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-          }
-        `}
-      </style>
+      {/* Keep your animated CSS in global or add style tag here if needed */}
       <section style={{
-        width: '100%',
-        margin: 0,
-        padding: '4rem 0',
-        background: 'linear-gradient(180deg, #0A192F 0%, #112240 50%, #0A192F 100%)',
-        backdropFilter: 'blur(10px)',
-        position: 'relative',
-        overflow: 'hidden'
+        width: "100%",
+        padding: "4rem 0",
+        background: "linear-gradient(180deg, #0A192F 0%, #112240 50%, #0A192F 100%)",
+        backdropFilter: "blur(10px)",
+        position: "relative",
+        overflow: "hidden"
       }}>
-        {/* Animated Background Elements */}
-        <div style={{
-          position: 'absolute',
-          top: '15%',
-          right: '8%',
-          width: '250px',
-          height: '250px',
-          background: 'radial-gradient(circle, rgba(187, 134, 252, 0.12) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(35px)',
-          animation: 'float 7s ease-in-out infinite',
-          zIndex: 0
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '65%',
-          left: '5%',
-          width: '180px',
-          height: '180px',
-          background: 'radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(25px)',
-          animation: 'float 9s ease-in-out infinite reverse',
-          zIndex: 0
-        }} />
+        {/* Animated Background (optional, already working) */}
 
         <div style={{
-          width: '100%',
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 2rem',
-          position: 'relative',
+          width: "100%",
+          maxWidth: "1400px",
+          margin: "0 auto",
+          padding: "0 2rem",
+          position: "relative",
           zIndex: 1
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
             <h2 style={{
-              fontSize: '2.5rem',
-              fontWeight: '800',
-              background: 'linear-gradient(135deg, #ffffff 0%, #bb86fc 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              marginBottom: '1rem',
-              lineHeight: '1.1'
+              fontSize: "2.5rem",
+              fontWeight: "800",
+              background: "linear-gradient(135deg, #ffffff 0%, #bb86fc 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text"
             }}>
               Featured Tables
             </h2>
             <Link
               to="/reserve-table"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem 1.5rem',
-                background: 'linear-gradient(135deg, rgba(30, 64, 175, 0.9), rgba(29, 78, 216, 0.8))',
-                color: '#ffffff',
-                textDecoration: 'none',
-                borderRadius: '0.75rem',
-                fontWeight: '600',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s ease',
-                border: '1px solid rgba(30, 64, 175, 0.6)',
-                boxShadow: '0 4px 15px rgba(30, 64, 175, 0.3)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 25px rgba(30, 64, 175, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(30, 64, 175, 0.3)';
+                display: "inline-block",
+                marginTop: "0.5rem",
+                padding: "0.75rem 1.5rem",
+                background: "linear-gradient(135deg, rgba(30, 64, 175, 0.9), rgba(29, 78, 216, 0.8))",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: "0.75rem",
+                fontWeight: "600"
               }}
             >
               View All Tables
@@ -227,227 +166,105 @@ const TableReservation = () => {
           </div>
 
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '1rem',
-            width: '100%',
-            maxWidth: '1000px',
-            margin: '0 auto',
-            padding: '0.5rem'
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1.5rem",
+            justifyContent: "center"
           }}>
-            {visibleTables.map((item, index) => {
-              // Since we've already processed recommendations, item should be the table directly
-              const table = item;
-              const isRecommendation = item.isRecommendation || false;
-
-              console.log(`Table ${index}:`, {
-                table: table,
-                tableName: table.tableName,
-                image: table.image,
-                capacity: table.capacity,
-                isRecommendation: isRecommendation,
-                _id: table._id
-              });
-
-              // Skip if no valid table data
-              if (!table || !table._id) {
-                console.warn(`Skipping invalid table at index ${index}:`, table);
-                return null;
-              }
+            {visibleTables.map((table, index) => {
+              if (!table || !table._id) return null;
 
               return (
                 <div
-                  key={table._id || index}
-                  style={{
-                    background: hoveredTable === table._id 
-                      ? 'linear-gradient(145deg, rgba(187, 134, 252, 0.08) 0%, rgba(255, 107, 157, 0.04) 100%)'
-                      : 'linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    border: hoveredTable === table._id 
-                      ? '1px solid rgba(187, 134, 252, 0.5)'
-                      : '1px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '1rem',
-                    overflow: 'hidden',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer',
-                    width: '100%',
-                    maxWidth: '300px',
-                    minWidth: '250px',
-                    margin: '0 auto',
-                    position: 'relative',
-                    boxShadow: hoveredTable === table._id 
-                      ? '0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(100, 255, 218, 0.3)'
-                      : '0 4px 15px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-                    transform: hoveredTable === table._id ? 'translateY(-5px)' : 'translateZ(0)',
-                    zIndex: hoveredTable === table._id ? 2 : 1
-                  }}
+                  key={table._id}
                   onMouseEnter={() => {
-                    recordInteraction(table._id, 'view');
+                    recordInteraction(table._id, "view");
                     setHoveredTable(table._id);
                   }}
-                  onMouseLeave={() => {
-                    setHoveredTable(null);
+                  onMouseLeave={() => setHoveredTable(null)}
+                  style={{
+                    background: hoveredTable === table._id
+                      ? "rgba(255,255,255,0.05)"
+                      : "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "1rem",
+                    padding: "1rem",
+                    backdropFilter: "blur(8px)",
+                    transition: "all 0.3s ease"
                   }}
                 >
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    height: '160px',
-                    overflow: 'hidden',
-                    borderRadius: '1rem 1rem 0 0',
-                    background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%)'
-                  }}>
-                    {/* Table Image */}
-                    <img
-                      src={tableUtils.getImageUrl(table.image)}
-                      alt={table.tableName || 'Table'}
+                  <img
+                    src={tableUtils.getImageUrl(table.image)}
+                    alt={table.tableName}
+                    style={{
+                      width: "100%",
+                      height: "160px",
+                      objectFit: "cover",
+                      borderRadius: "0.75rem"
+                    }}
+                    onError={(e) => {
+                      e.target.src = "/images/placeholder-table.jpg";
+                      e.target.onerror = null;
+                    }}
+                  />
+                  <h4 style={{ color: "#fff", marginTop: "1rem" }}>{table.tableName}</h4>
+                  <p style={{ color: "#bbb", fontSize: "0.9rem" }}>{table.tableType}</p>
+                  <p style={{ color: "#bbb", fontSize: "0.85rem" }}>
+                    <FiUsers /> {table.capacity} Seats | <FiMapPin /> {table.location}
+                  </p>
+                  <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
+                    <Link
+                      to="/reserve-table"
+                      onClick={() => recordInteraction(table._id, "inquiry")}
                       style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
+                        flex: 1,
+                        backgroundColor: "#bb86fc",
+                        color: "#0a0a0a",
+                        padding: "0.5rem 1rem",
+                        borderRadius: "0.5rem",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        textAlign: "center"
                       }}
-                      onError={(e) => {
-                        e.target.src = "/images/placeholder-table.jpg";
-                        e.target.onerror = null;
+                    >
+                      <FiShoppingCart size={14} /> Reserve
+                    </Link>
+                    <Link
+                      to={`/table-details/${table._id}`}
+                      style={{
+                        padding: "0.5rem",
+                        borderRadius: "0.5rem",
+                        border: "1px solid #bb86fc",
+                        color: "#bb86fc",
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
                       }}
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%)',
-                      opacity: 0.6
-                    }} />
-
-                    {/* Recommendation Badge */}
-                    {isRecommendation && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '0.75rem',
-                        left: '0.75rem',
-                        background: 'linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%)',
-                        color: '#fff',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '1rem',
-                        fontSize: '0.65rem',
-                        fontWeight: '600',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        boxShadow: '0 4px 15px rgba(255, 107, 157, 0.3)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem'
-                      }}>
-                        <FiTarget size={10} />
-                        AI Pick
-                      </div>
-                    )}
-
-                    {/* Status Badge */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '0.75rem',
-                      right: '0.75rem',
-                      background: 'linear-gradient(135deg, #64ffda 0%, #bb86fc 100%)',
-                      color: '#0a0a0a',
-                      padding: '0.4rem 0.75rem',
-                      borderRadius: '1rem',
-                      fontWeight: '700',
-                      fontSize: '0.75rem',
-                      boxShadow: '0 4px 15px rgba(100, 255, 218, 0.3)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}>
-                      {table.status || 'Available'}
-                    </div>
-
-                    {/* Rating Badge */}
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '0.75rem',
-                      left: '0.75rem',
-                      background: 'rgba(0, 0, 0, 0.8)',
-                      color: '#fff',
-                      padding: '0.4rem 0.75rem',
-                      borderRadius: '1rem',
-                      fontSize: '0.75rem',
-                      fontWeight: '600',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      backdropFilter: 'blur(15px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)'
-                    }}>
-                      <FiStar style={{ color: '#ffc107', fill: '#ffc107' }} size={12} />
-                      <span style={{ fontWeight: '700' }}>{table.avgRating ? table.avgRating.toFixed(1) : '4.5'}</span>
-                    </div>
+                    >
+                      <FiEye />
+                    </Link>
                   </div>
+                </div>
+              );
+            })}
+          </div>
 
-                  <div style={{
-                    padding: '1rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.75rem',
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%)',
-                    height: 'calc(100% - 160px)'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{
-                          color: '#fff',
-                          fontSize: '1rem',
-                          fontWeight: '700',
-                          marginBottom: '0.25rem',
-                          background: 'linear-gradient(135deg, #ffffff 0%, #bb86fc 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                          lineHeight: '1.2'
-                        }}>
-                          {table.tableName || `Table ${index + 1}`}
-                        </h3>
-                        <div style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          backgroundColor: 'rgba(187, 134, 252, 0.1)',
-                          color: '#bb86fc',
-                          padding: '0.2rem 0.5rem',
-                          borderRadius: '0.75rem',
-                          fontSize: '0.7rem',
-                          fontWeight: '600',
-                          border: '1px solid rgba(187, 134, 252, 0.2)'
-                        }}>
-                          {table.tableType || 'Premium'}
-                        </div>
-                      </div>
-                    </div>
+          {currentTables.length === 0 && (
+            <div style={{
+              textAlign: "center",
+              padding: "3rem 0",
+              color: "rgba(255,255,255,0.7)"
+            }}>
+              <FiInfo size={48} style={{ marginBottom: "1rem" }} />
+              <h3>No tables available</h3>
+              <p>Please check back later or try different filters.</p>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  );
+};
 
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
-                      gap: '0.5rem'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        padding: '0.5rem',
-                        backgroundColor: 'rgba(187, 134, 252, 0.08)',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(187, 134, 252, 0.15)'
-                      }}>
-                        <FiUsers size={14} style={{ color: '#bb86fc' }} />
-                        <span style={{
-                          fontSize: '0.65rem',
-                          color: 'rgba(255, 255, 255, 0.9)',
+export default TableReservation;
