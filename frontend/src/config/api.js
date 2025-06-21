@@ -1,10 +1,10 @@
 // API Configuration for different environments
 const config = {
   development: {
-    API_BASE_URL: 'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app', // Changed to use deployed backend even in development
+    API_BASE_URL: 'https://finalfypproject-b8to2pczs-huzaifas-projects-eabfae35.vercel.app',
   },
   production: {
-    API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app',
+    API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://finalfypproject-b8to2pczs-huzaifas-projects-eabfae35.vercel.app',
   }
 };
 
@@ -13,7 +13,7 @@ const currentConfig = config[environment];
 
 export const API_BASE_URL = currentConfig.API_BASE_URL;
 
-console.log('API Configuration:', {
+console.log('✅ API Configuration:', {
   environment,
   API_BASE_URL,
   NODE_ENV: process.env.NODE_ENV,
@@ -52,15 +52,14 @@ export const API_ENDPOINTS = {
   ML_INFO: '/api/ml-info',
 };
 
-// Helper function to build full URL
+// Helper to build full URL
 export const buildApiUrl = (endpoint) => {
   return `${API_BASE_URL}${endpoint}`;
 };
 
-// Helper function for API calls with better error handling
+// API call wrapper
 export const apiCall = async (endpoint, options = {}) => {
   const url = buildApiUrl(endpoint);
-  
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
@@ -68,14 +67,13 @@ export const apiCall = async (endpoint, options = {}) => {
     },
   };
 
-  // Add authorization header if token exists
   const token = localStorage.getItem('token');
   if (token) {
     defaultOptions.headers.Authorization = `Bearer ${token}`;
   }
 
   try {
-    console.log(`Making API call to: ${url}`);
+    console.log(`📡 Calling API: ${url}`);
     const response = await fetch(url, {
       ...defaultOptions,
       ...options,
@@ -83,15 +81,14 @@ export const apiCall = async (endpoint, options = {}) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`API Error ${response.status}:`, errorText);
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
-    console.log(`API call successful:`, data);
+    console.log(`✅ Response:`, data);
     return data;
   } catch (error) {
-    console.error('API call failed:', error);
+    console.error('❌ API call failed:', error);
     throw error;
   }
 };
@@ -100,15 +97,15 @@ export const apiCall = async (endpoint, options = {}) => {
 export const testConnection = async () => {
   try {
     const response = await apiCall('/api/health');
-    console.log('Backend connection test successful:', response);
+    console.log('✅ Backend connection healthy:', response);
     return true;
   } catch (error) {
-    console.error('Backend connection test failed:', error);
+    console.error('❌ Backend health check failed:', error);
     return false;
   }
 };
 
-// Export default configuration
+// Export default config
 export default {
   API_BASE_URL,
   API_ENDPOINTS,
