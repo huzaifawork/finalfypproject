@@ -1,0 +1,329 @@
+# ========================================
+# TABLE RECOMMENDATION SYSTEM - GOOGLE COLAB
+# Complete Implementation Guide
+# ========================================
+
+# CELL 1: Install Required Libraries
+# ===================================
+!pip install pandas numpy scikit-learn matplotlib seaborn plotly
+!pip install surprise implicit lightfm
+!pip install openpyxl xlsxwriter
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+import random
+from sklearn.model_selection import train_test_split
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.decomposition import TruncatedSVD
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+import warnings
+warnings.filterwarnings('ignore')
+
+print("✅ All libraries installed successfully!")
+
+# CELL 2: Generate Tables Dataset
+# ===============================
+np.random.seed(42)
+random.seed(42)
+
+# Table configurations
+table_locations = ['Window', 'Garden', 'Main Hall', 'Private Room', 'Bar Area', 'Terrace', 'Corner', 'Center']
+table_types = ['Standard', 'Premium', 'VIP', 'Outdoor', 'Booth', 'Counter', 'Private']
+ambiance_types = ['Romantic', 'Casual', 'Formal', 'Lively', 'Quiet', 'Intimate', 'Social']
+
+# Generate 50 tables
+n_tables = 50
+tables_data = []
+
+for i in range(1, n_tables + 1):
+    table = {
+        'table_id': f'T{i:03d}',
+        'table_number': i,
+        'capacity': np.random.choice([2, 4, 6, 8, 10, 12], p=[0.3, 0.35, 0.2, 0.1, 0.03, 0.02]),
+        'location': np.random.choice(table_locations),
+        'table_type': np.random.choice(table_types),
+        'ambiance': np.random.choice(ambiance_types),
+        'has_window_view': np.random.choice([True, False], p=[0.4, 0.6]),
+        'is_private': np.random.choice([True, False], p=[0.2, 0.8]),
+        'has_special_lighting': np.random.choice([True, False], p=[0.3, 0.7]),
+        'accessibility_friendly': np.random.choice([True, False], p=[0.25, 0.75]),
+        'price_tier': np.random.choice(['Budget', 'Mid-range', 'Premium'], p=[0.3, 0.5, 0.2]),
+        'avg_rating': round(np.random.normal(4.2, 0.6), 1),
+        'total_bookings': np.random.randint(50, 500),
+        'features': []
+    }
+    
+    # Add special features based on table characteristics
+    features = []
+    if table['has_window_view']:
+        features.append('Window View')
+    if table['is_private']:
+        features.append('Private')
+    if table['location'] == 'Garden':
+        features.append('Garden Setting')
+    if table['table_type'] == 'VIP':
+        features.append('VIP Service')
+    if table['has_special_lighting']:
+        features.append('Ambient Lighting')
+    if table['accessibility_friendly']:
+        features.append('Wheelchair Accessible')
+    
+    table['features'] = ', '.join(features)
+    table['feature_count'] = len(features)
+    
+    tables_data.append(table)
+
+tables_df = pd.DataFrame(tables_data)
+print(f"✅ Generated {len(tables_df)} tables")
+print("\n📊 Table Distribution:")
+print(f"Capacity distribution:\n{tables_df['capacity'].value_counts().sort_index()}")
+print(f"\nLocation distribution:\n{tables_df['location'].value_counts()}")
+print(f"\nAmbiance distribution:\n{tables_df['ambiance'].value_counts()}")
+
+# Display sample tables
+print("\n🔍 Sample Tables:")
+display(tables_df.head(10))
+
+# CELL 3: Generate Users Dataset
+# ==============================
+n_users = 1000
+
+# User demographics and preferences
+age_groups = ['18-25', '26-35', '36-45', '46-55', '56-65', '65+']
+dining_frequencies = ['Weekly', 'Bi-weekly', 'Monthly', 'Occasionally', 'Rarely']
+preferred_occasions = ['Romantic', 'Business', 'Family', 'Friends', 'Celebration', 'Casual']
+preferred_times = ['Lunch', 'Early Dinner', 'Prime Dinner', 'Late Dinner']
+spending_levels = ['Budget', 'Mid-range', 'Premium']
+
+users_data = []
+
+for i in range(1, n_users + 1):
+    user = {
+        'user_id': f'U{i:04d}',
+        'age_group': np.random.choice(age_groups, p=[0.15, 0.25, 0.25, 0.2, 0.1, 0.05]),
+        'dining_frequency': np.random.choice(dining_frequencies, p=[0.1, 0.2, 0.3, 0.3, 0.1]),
+        'preferred_group_size': np.random.choice([2, 4, 6, 8], p=[0.4, 0.35, 0.2, 0.05]),
+        'preferred_occasion': np.random.choice(preferred_occasions),
+        'preferred_time': np.random.choice(preferred_times),
+        'spending_level': np.random.choice(spending_levels, p=[0.3, 0.5, 0.2]),
+        'prefers_quiet': np.random.choice([True, False], p=[0.4, 0.6]),
+        'prefers_window': np.random.choice([True, False], p=[0.6, 0.4]),
+        'prefers_private': np.random.choice([True, False], p=[0.3, 0.7]),
+        'accessibility_needs': np.random.choice([True, False], p=[0.1, 0.9]),
+        'avg_party_size': 0,  # Will calculate from bookings
+        'total_bookings': 0,  # Will calculate from bookings
+        'avg_rating_given': round(np.random.normal(4.0, 0.8), 1),
+        'loyalty_score': round(np.random.uniform(0, 100), 1)
+    }
+    
+    # Ensure rating is within valid range
+    user['avg_rating_given'] = max(1.0, min(5.0, user['avg_rating_given']))
+    
+    users_data.append(user)
+
+users_df = pd.DataFrame(users_data)
+print(f"✅ Generated {len(users_df)} users")
+print("\n📊 User Distribution:")
+print(f"Age groups:\n{users_df['age_group'].value_counts()}")
+print(f"\nDining frequency:\n{users_df['dining_frequency'].value_counts()}")
+print(f"\nPreferred occasions:\n{users_df['preferred_occasion'].value_counts()}")
+
+# Display sample users
+print("\n🔍 Sample Users:")
+display(users_df.head(10))
+
+# CELL 4: Generate Bookings Dataset
+# =================================
+n_bookings = 15000
+
+# Time-based patterns
+start_date = datetime(2023, 1, 1)
+end_date = datetime(2024, 12, 31)
+date_range = (end_date - start_date).days
+
+bookings_data = []
+
+for i in range(n_bookings):
+    # Select random user and table
+    user = users_df.sample(1).iloc[0]
+    table = tables_df.sample(1).iloc[0]
+
+    # Generate booking date
+    random_days = np.random.randint(0, date_range)
+    booking_date = start_date + timedelta(days=random_days)
+
+    # Determine if booking matches user preferences (higher probability)
+    preference_match = np.random.random() < 0.7
+
+    # Generate party size (usually close to user's preferred size)
+    if np.random.random() < 0.6:
+        party_size = user['preferred_group_size']
+    else:
+        party_size = np.random.choice([2, 4, 6, 8], p=[0.4, 0.35, 0.2, 0.05])
+
+    # Ensure party size doesn't exceed table capacity
+    party_size = min(party_size, table['capacity'])
+
+    # Generate occasion (usually matches user preference)
+    if np.random.random() < 0.5:
+        occasion = user['preferred_occasion']
+    else:
+        occasion = np.random.choice(preferred_occasions)
+
+    # Generate time slot
+    if np.random.random() < 0.4:
+        time_slot = user['preferred_time']
+    else:
+        time_slot = np.random.choice(preferred_times)
+
+    # Generate booking status
+    status = np.random.choice(['Completed', 'Cancelled', 'No-show'], p=[0.85, 0.12, 0.03])
+
+    # Generate duration (in minutes)
+    base_duration = {'Lunch': 90, 'Early Dinner': 120, 'Prime Dinner': 150, 'Late Dinner': 180}
+    duration = np.random.normal(base_duration[time_slot], 30)
+    duration = max(60, min(300, duration))  # Between 1-5 hours
+
+    booking = {
+        'booking_id': f'B{i+1:06d}',
+        'user_id': user['user_id'],
+        'table_id': table['table_id'],
+        'booking_date': booking_date.strftime('%Y-%m-%d'),
+        'time_slot': time_slot,
+        'party_size': party_size,
+        'occasion': occasion,
+        'duration_minutes': int(duration),
+        'status': status,
+        'special_requests': np.random.choice([True, False], p=[0.2, 0.8]),
+        'is_repeat_customer': np.random.choice([True, False], p=[0.4, 0.6]),
+        'booking_advance_days': np.random.randint(0, 30),
+        'total_spent': round(np.random.normal(150, 50) * party_size, 2),
+        'created_at': (booking_date - timedelta(days=np.random.randint(0, 30))).strftime('%Y-%m-%d')
+    }
+
+    # Ensure positive spending
+    booking['total_spent'] = max(50, booking['total_spent'])
+
+    bookings_data.append(booking)
+
+bookings_df = pd.DataFrame(bookings_data)
+
+# Update user statistics based on bookings
+user_stats = bookings_df.groupby('user_id').agg({
+    'party_size': 'mean',
+    'booking_id': 'count',
+    'total_spent': 'mean'
+}).round(2)
+
+user_stats.columns = ['avg_party_size', 'total_bookings', 'avg_spending']
+
+# Merge back to users dataframe
+users_df = users_df.set_index('user_id').combine_first(user_stats).reset_index()
+
+print(f"✅ Generated {len(bookings_df)} bookings")
+print(f"📊 Booking Status Distribution:")
+print(bookings_df['status'].value_counts())
+print(f"\n📊 Occasion Distribution:")
+print(bookings_df['occasion'].value_counts())
+print(f"\n📊 Time Slot Distribution:")
+print(bookings_df['time_slot'].value_counts())
+
+# Display sample bookings
+print("\n🔍 Sample Bookings:")
+display(bookings_df.head(10))
+
+# CELL 5: Generate User-Table Interactions
+# ========================================
+n_interactions = 25000
+
+interaction_types = ['view', 'inquiry', 'favorite', 'share', 'rating']
+interaction_weights = [0.6, 0.2, 0.1, 0.05, 0.05]
+
+interactions_data = []
+
+for i in range(n_interactions):
+    user = users_df.sample(1).iloc[0]
+    table = tables_df.sample(1).iloc[0]
+
+    interaction_type = np.random.choice(interaction_types, p=interaction_weights)
+
+    # Generate timestamp
+    interaction_date = start_date + timedelta(days=np.random.randint(0, date_range))
+
+    # Generate rating if interaction type is rating
+    rating = None
+    if interaction_type == 'rating':
+        # Rating influenced by table's average rating and user's tendency
+        base_rating = table['avg_rating']
+        user_bias = (user['avg_rating_given'] - 4.0) * 0.5
+        rating = np.random.normal(base_rating + user_bias, 0.8)
+        rating = max(1.0, min(5.0, round(rating, 1)))
+
+    # Generate session duration for views
+    session_duration = None
+    if interaction_type == 'view':
+        session_duration = np.random.exponential(120)  # Average 2 minutes
+        session_duration = min(1800, session_duration)  # Max 30 minutes
+
+    interaction = {
+        'interaction_id': f'I{i+1:06d}',
+        'user_id': user['user_id'],
+        'table_id': table['table_id'],
+        'interaction_type': interaction_type,
+        'timestamp': interaction_date.strftime('%Y-%m-%d %H:%M:%S'),
+        'rating': rating,
+        'session_duration_seconds': session_duration,
+        'device_type': np.random.choice(['mobile', 'desktop', 'tablet'], p=[0.6, 0.3, 0.1]),
+        'source': np.random.choice(['search', 'recommendation', 'browse', 'direct'], p=[0.4, 0.3, 0.2, 0.1])
+    }
+
+    interactions_data.append(interaction)
+
+interactions_df = pd.DataFrame(interactions_data)
+
+print(f"✅ Generated {len(interactions_df)} interactions")
+print(f"📊 Interaction Type Distribution:")
+print(interactions_df['interaction_type'].value_counts())
+print(f"\n📊 Source Distribution:")
+print(interactions_df['source'].value_counts())
+
+# Display sample interactions
+print("\n🔍 Sample Interactions:")
+display(interactions_df.head(10))
+
+# CELL 6: Save Datasets to CSV Files
+# ==================================
+# Save all datasets for future use
+tables_df.to_csv('tables_dataset.csv', index=False)
+users_df.to_csv('users_dataset.csv', index=False)
+bookings_df.to_csv('bookings_dataset.csv', index=False)
+interactions_df.to_csv('interactions_dataset.csv', index=False)
+
+print("✅ All datasets saved to CSV files:")
+print("- tables_dataset.csv")
+print("- users_dataset.csv")
+print("- bookings_dataset.csv")
+print("- interactions_dataset.csv")
+
+# Create a summary dataset info
+dataset_info = {
+    'Dataset': ['Tables', 'Users', 'Bookings', 'Interactions'],
+    'Records': [len(tables_df), len(users_df), len(bookings_df), len(interactions_df)],
+    'Columns': [len(tables_df.columns), len(users_df.columns), len(bookings_df.columns), len(interactions_df.columns)],
+    'File_Size_MB': [
+        round(tables_df.memory_usage(deep=True).sum() / 1024**2, 2),
+        round(users_df.memory_usage(deep=True).sum() / 1024**2, 2),
+        round(bookings_df.memory_usage(deep=True).sum() / 1024**2, 2),
+        round(interactions_df.memory_usage(deep=True).sum() / 1024**2, 2)
+    ]
+}
+
+dataset_summary = pd.DataFrame(dataset_info)
+print("\n📊 Dataset Summary:")
+display(dataset_summary)

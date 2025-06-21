@@ -1,0 +1,448 @@
+# ========================================
+# TABLE RECOMMENDATION ALGORITHMS
+# Advanced ML Implementation
+# ========================================
+
+# CELL 7: Data Analysis & Visualization
+# =====================================
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+
+# Set style for better visualizations
+plt.style.use('seaborn-v0_8')
+sns.set_palette("husl")
+
+# 1. Booking patterns over time
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+
+# Convert booking_date to datetime for analysis
+bookings_df['booking_date'] = pd.to_datetime(bookings_df['booking_date'])
+
+# Subplot 1: Bookings over time
+monthly_bookings = bookings_df.groupby(bookings_df['booking_date'].dt.to_period('M')).size()
+monthly_bookings.plot(kind='line', ax=axes[0,0])
+axes[0,0].set_title('Bookings Over Time', fontsize=14, fontweight='bold')
+axes[0,0].set_xlabel('Month')
+axes[0,0].set_ylabel('Number of Bookings')
+
+# Subplot 2: Popular tables
+table_popularity = bookings_df['table_id'].value_counts().head(10)
+table_popularity.plot(kind='bar', ax=axes[0,1])
+axes[0,1].set_title('Top 10 Most Booked Tables', fontsize=14, fontweight='bold')
+axes[0,1].set_xlabel('Table ID')
+axes[0,1].set_ylabel('Number of Bookings')
+axes[0,1].tick_params(axis='x', rotation=45)
+
+# Subplot 3: Occasion distribution
+occasion_counts = bookings_df['occasion'].value_counts()
+axes[0,2].pie(occasion_counts.values, labels=occasion_counts.index, autopct='%1.1f%%')
+axes[0,2].set_title('Booking Occasions', fontsize=14, fontweight='bold')
+
+# Subplot 4: Time slot preferences
+time_slot_counts = bookings_df['time_slot'].value_counts()
+time_slot_counts.plot(kind='bar', ax=axes[1,0])
+axes[1,0].set_title('Time Slot Preferences', fontsize=14, fontweight='bold')
+axes[1,0].set_xlabel('Time Slot')
+axes[1,0].set_ylabel('Number of Bookings')
+axes[1,0].tick_params(axis='x', rotation=45)
+
+# Subplot 5: Party size distribution
+party_size_counts = bookings_df['party_size'].value_counts().sort_index()
+party_size_counts.plot(kind='bar', ax=axes[1,1])
+axes[1,1].set_title('Party Size Distribution', fontsize=14, fontweight='bold')
+axes[1,1].set_xlabel('Party Size')
+axes[1,1].set_ylabel('Number of Bookings')
+
+# Subplot 6: Average spending by occasion
+avg_spending = bookings_df.groupby('occasion')['total_spent'].mean().sort_values(ascending=False)
+avg_spending.plot(kind='bar', ax=axes[1,2])
+axes[1,2].set_title('Average Spending by Occasion', fontsize=14, fontweight='bold')
+axes[1,2].set_xlabel('Occasion')
+axes[1,2].set_ylabel('Average Spending ($)')
+axes[1,2].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+# 2. User behavior analysis
+fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+
+# User engagement metrics
+user_booking_counts = users_df['total_bookings'].value_counts().sort_index()
+user_booking_counts.plot(kind='bar', ax=axes[0,0])
+axes[0,0].set_title('User Booking Frequency Distribution', fontsize=14, fontweight='bold')
+axes[0,0].set_xlabel('Number of Bookings')
+axes[0,0].set_ylabel('Number of Users')
+
+# Age group preferences
+age_occasion = pd.crosstab(users_df['age_group'], users_df['preferred_occasion'])
+age_occasion.plot(kind='bar', stacked=True, ax=axes[0,1])
+axes[0,1].set_title('Preferred Occasions by Age Group', fontsize=14, fontweight='bold')
+axes[0,1].set_xlabel('Age Group')
+axes[0,1].set_ylabel('Number of Users')
+axes[0,1].tick_params(axis='x', rotation=45)
+
+# Spending patterns
+spending_dist = users_df['spending_level'].value_counts()
+axes[0,2].pie(spending_dist.values, labels=spending_dist.index, autopct='%1.1f%%')
+axes[0,2].set_title('User Spending Levels', fontsize=14, fontweight='bold')
+
+# Table characteristics analysis
+table_capacity = tables_df['capacity'].value_counts().sort_index()
+table_capacity.plot(kind='bar', ax=axes[1,0])
+axes[1,0].set_title('Table Capacity Distribution', fontsize=14, fontweight='bold')
+axes[1,0].set_xlabel('Capacity')
+axes[1,0].set_ylabel('Number of Tables')
+
+# Table location popularity
+location_bookings = bookings_df.merge(tables_df[['table_id', 'location']], on='table_id')
+location_popularity = location_bookings['location'].value_counts()
+location_popularity.plot(kind='bar', ax=axes[1,1])
+axes[1,1].set_title('Table Location Popularity', fontsize=14, fontweight='bold')
+axes[1,1].set_xlabel('Location')
+axes[1,1].set_ylabel('Number of Bookings')
+axes[1,1].tick_params(axis='x', rotation=45)
+
+# Ambiance preferences
+ambiance_bookings = bookings_df.merge(tables_df[['table_id', 'ambiance']], on='table_id')
+ambiance_popularity = ambiance_bookings['ambiance'].value_counts()
+ambiance_popularity.plot(kind='bar', ax=axes[1,2])
+axes[1,2].set_title('Ambiance Preferences', fontsize=14, fontweight='bold')
+axes[1,2].set_xlabel('Ambiance')
+axes[1,2].set_ylabel('Number of Bookings')
+axes[1,2].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+print("✅ Data analysis and visualization completed!")
+
+# CELL 8: Feature Engineering for Recommendations
+# ===============================================
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+# Create user-table interaction matrix
+def create_interaction_matrix():
+    """Create user-table interaction matrix with weighted scores"""
+    
+    # Define interaction weights
+    interaction_weights = {
+        'view': 1.0,
+        'inquiry': 2.0,
+        'favorite': 3.0,
+        'share': 2.5,
+        'rating': 4.0,
+        'booking': 5.0  # From bookings data
+    }
+    
+    # Process interactions
+    interactions_weighted = interactions_df.copy()
+    interactions_weighted['weight'] = interactions_weighted['interaction_type'].map(interaction_weights)
+    
+    # Add booking interactions
+    booking_interactions = bookings_df[bookings_df['status'] == 'Completed'].copy()
+    booking_interactions['interaction_type'] = 'booking'
+    booking_interactions['weight'] = 5.0
+    booking_interactions = booking_interactions[['user_id', 'table_id', 'interaction_type', 'weight']]
+    
+    # Combine all interactions
+    all_interactions = pd.concat([
+        interactions_weighted[['user_id', 'table_id', 'interaction_type', 'weight']],
+        booking_interactions
+    ])
+    
+    # Create interaction matrix
+    interaction_matrix = all_interactions.groupby(['user_id', 'table_id'])['weight'].sum().reset_index()
+    interaction_pivot = interaction_matrix.pivot(index='user_id', columns='table_id', values='weight').fillna(0)
+    
+    return interaction_pivot, interaction_matrix
+
+# Create feature matrices
+def create_user_features():
+    """Create user feature matrix for content-based filtering"""
+    
+    # Encode categorical features
+    le_age = LabelEncoder()
+    le_freq = LabelEncoder()
+    le_occasion = LabelEncoder()
+    le_time = LabelEncoder()
+    le_spending = LabelEncoder()
+    
+    user_features = users_df.copy()
+    user_features['age_group_encoded'] = le_age.fit_transform(user_features['age_group'])
+    user_features['dining_frequency_encoded'] = le_freq.fit_transform(user_features['dining_frequency'])
+    user_features['preferred_occasion_encoded'] = le_occasion.fit_transform(user_features['preferred_occasion'])
+    user_features['preferred_time_encoded'] = le_time.fit_transform(user_features['preferred_time'])
+    user_features['spending_level_encoded'] = le_spending.fit_transform(user_features['spending_level'])
+    
+    # Select numerical features
+    feature_columns = [
+        'age_group_encoded', 'dining_frequency_encoded', 'preferred_group_size',
+        'preferred_occasion_encoded', 'preferred_time_encoded', 'spending_level_encoded',
+        'prefers_quiet', 'prefers_window', 'prefers_private', 'accessibility_needs',
+        'avg_party_size', 'total_bookings', 'avg_rating_given', 'loyalty_score'
+    ]
+    
+    # Convert boolean to int
+    for col in ['prefers_quiet', 'prefers_window', 'prefers_private', 'accessibility_needs']:
+        user_features[col] = user_features[col].astype(int)
+    
+    # Fill NaN values
+    user_features[feature_columns] = user_features[feature_columns].fillna(0)
+    
+    return user_features[['user_id'] + feature_columns], {
+        'age': le_age, 'frequency': le_freq, 'occasion': le_occasion, 
+        'time': le_time, 'spending': le_spending
+    }
+
+def create_table_features():
+    """Create table feature matrix for content-based filtering"""
+    
+    # Encode categorical features
+    le_location = LabelEncoder()
+    le_type = LabelEncoder()
+    le_ambiance = LabelEncoder()
+    le_price = LabelEncoder()
+    
+    table_features = tables_df.copy()
+    table_features['location_encoded'] = le_location.fit_transform(table_features['location'])
+    table_features['table_type_encoded'] = le_type.fit_transform(table_features['table_type'])
+    table_features['ambiance_encoded'] = le_ambiance.fit_transform(table_features['ambiance'])
+    table_features['price_tier_encoded'] = le_price.fit_transform(table_features['price_tier'])
+    
+    # Select numerical features
+    feature_columns = [
+        'capacity', 'location_encoded', 'table_type_encoded', 'ambiance_encoded',
+        'has_window_view', 'is_private', 'has_special_lighting', 'accessibility_friendly',
+        'price_tier_encoded', 'avg_rating', 'total_bookings', 'feature_count'
+    ]
+    
+    # Convert boolean to int
+    for col in ['has_window_view', 'is_private', 'has_special_lighting', 'accessibility_friendly']:
+        table_features[col] = table_features[col].astype(int)
+    
+    return table_features[['table_id'] + feature_columns], {
+        'location': le_location, 'type': le_type, 'ambiance': le_ambiance, 'price': le_price
+    }
+
+# Create all feature matrices
+interaction_matrix, interaction_data = create_interaction_matrix()
+user_features, user_encoders = create_user_features()
+table_features, table_encoders = create_table_features()
+
+print("✅ Feature engineering completed!")
+print(f"📊 Interaction matrix shape: {interaction_matrix.shape}")
+print(f"📊 User features shape: {user_features.shape}")
+print(f"📊 Table features shape: {table_features.shape}")
+
+# Display sample feature matrices
+print("\n🔍 Sample User Features:")
+display(user_features.head())
+print("\n🔍 Sample Table Features:")
+display(table_features.head())
+print("\n🔍 Sample Interaction Matrix:")
+display(interaction_matrix.iloc[:5, :5])
+
+# CELL 9: Collaborative Filtering Algorithm
+# =========================================
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import TruncatedSVD
+
+class CollaborativeFilteringRecommender:
+    def __init__(self, n_components=50):
+        self.n_components = n_components
+        self.svd = TruncatedSVD(n_components=n_components, random_state=42)
+        self.user_factors = None
+        self.item_factors = None
+        self.user_means = None
+
+    def fit(self, interaction_matrix):
+        """Train the collaborative filtering model"""
+        # Center the data by subtracting user means
+        self.user_means = interaction_matrix.mean(axis=1)
+        centered_matrix = interaction_matrix.sub(self.user_means, axis=0)
+
+        # Apply SVD
+        self.user_factors = self.svd.fit_transform(centered_matrix)
+        self.item_factors = self.svd.components_.T
+
+        # Store user and item indices
+        self.user_index = interaction_matrix.index
+        self.item_index = interaction_matrix.columns
+
+        return self
+
+    def predict(self, user_id, table_id):
+        """Predict rating for a specific user-table pair"""
+        if user_id not in self.user_index or table_id not in self.item_index:
+            return self.user_means.mean()  # Global average
+
+        user_idx = self.user_index.get_loc(user_id)
+        item_idx = self.item_index.get_loc(table_id)
+
+        # Reconstruct rating
+        predicted = np.dot(self.user_factors[user_idx], self.item_factors[item_idx])
+        predicted += self.user_means[user_id]
+
+        return max(0, predicted)  # Ensure non-negative
+
+    def recommend(self, user_id, n_recommendations=10, exclude_seen=True):
+        """Generate recommendations for a user"""
+        if user_id not in self.user_index:
+            # For new users, recommend popular tables
+            popular_tables = interaction_matrix.sum(axis=0).nlargest(n_recommendations)
+            return list(popular_tables.index)
+
+        user_idx = self.user_index.get_loc(user_id)
+
+        # Get all predictions for this user
+        user_predictions = np.dot(self.user_factors[user_idx], self.item_factors.T)
+        user_predictions += self.user_means[user_id]
+
+        # Create series with table IDs
+        predictions_series = pd.Series(user_predictions, index=self.item_index)
+
+        if exclude_seen:
+            # Exclude tables the user has already interacted with
+            seen_tables = interaction_matrix.loc[user_id]
+            seen_tables = seen_tables[seen_tables > 0].index
+            predictions_series = predictions_series.drop(seen_tables, errors='ignore')
+
+        # Return top recommendations
+        recommendations = predictions_series.nlargest(n_recommendations)
+        return list(recommendations.index)
+
+# Train collaborative filtering model
+cf_recommender = CollaborativeFilteringRecommender(n_components=30)
+cf_recommender.fit(interaction_matrix)
+
+print("✅ Collaborative Filtering model trained!")
+
+# Test the model
+test_user = users_df['user_id'].iloc[0]
+cf_recommendations = cf_recommender.recommend(test_user, n_recommendations=5)
+print(f"\n🔍 CF Recommendations for user {test_user}:")
+for i, table_id in enumerate(cf_recommendations, 1):
+    table_info = tables_df[tables_df['table_id'] == table_id].iloc[0]
+    print(f"{i}. {table_id} - {table_info['location']} ({table_info['capacity']} seats, {table_info['ambiance']})")
+
+# CELL 10: Content-Based Filtering Algorithm
+# ==========================================
+from sklearn.preprocessing import StandardScaler
+
+class ContentBasedRecommender:
+    def __init__(self):
+        self.user_scaler = StandardScaler()
+        self.table_scaler = StandardScaler()
+        self.user_features_scaled = None
+        self.table_features_scaled = None
+
+    def fit(self, user_features, table_features):
+        """Train the content-based model"""
+        # Scale features
+        user_feature_cols = [col for col in user_features.columns if col != 'user_id']
+        table_feature_cols = [col for col in table_features.columns if col != 'table_id']
+
+        self.user_features_scaled = user_features.copy()
+        self.user_features_scaled[user_feature_cols] = self.user_scaler.fit_transform(
+            user_features[user_feature_cols]
+        )
+
+        self.table_features_scaled = table_features.copy()
+        self.table_features_scaled[table_feature_cols] = self.table_scaler.fit_transform(
+            table_features[table_feature_cols]
+        )
+
+        return self
+
+    def get_user_profile(self, user_id, interaction_data):
+        """Create user profile based on past interactions"""
+        # Get user's past interactions
+        user_interactions = interaction_data[interaction_data['user_id'] == user_id]
+
+        if len(user_interactions) == 0:
+            # New user - use their stated preferences
+            return self.user_features_scaled[
+                self.user_features_scaled['user_id'] == user_id
+            ].iloc[0]
+
+        # Weight table features by interaction strength
+        weighted_features = []
+        total_weight = 0
+
+        for _, interaction in user_interactions.iterrows():
+            table_id = interaction['table_id']
+            weight = interaction['weight']
+
+            table_feature = self.table_features_scaled[
+                self.table_features_scaled['table_id'] == table_id
+            ]
+
+            if len(table_feature) > 0:
+                table_feature_cols = [col for col in table_feature.columns if col != 'table_id']
+                weighted_features.append(table_feature[table_feature_cols].iloc[0] * weight)
+                total_weight += weight
+
+        if total_weight > 0:
+            # Average weighted features
+            avg_features = sum(weighted_features) / total_weight
+            return avg_features
+        else:
+            # Fallback to user preferences
+            return self.user_features_scaled[
+                self.user_features_scaled['user_id'] == user_id
+            ].iloc[0]
+
+    def recommend(self, user_id, interaction_data, n_recommendations=10, exclude_seen=True):
+        """Generate content-based recommendations"""
+        # Get user profile
+        user_profile = self.get_user_profile(user_id, interaction_data)
+
+        # Calculate similarities with all tables
+        table_feature_cols = [col for col in self.table_features_scaled.columns if col != 'table_id']
+
+        if isinstance(user_profile, pd.Series):
+            # User profile from preferences
+            user_feature_cols = [col for col in self.user_features_scaled.columns if col != 'user_id']
+            user_vector = user_profile[user_feature_cols].values.reshape(1, -1)
+
+            # Map user features to table features (simplified mapping)
+            # In practice, you'd want more sophisticated feature mapping
+            table_vectors = self.table_features_scaled[table_feature_cols].values
+
+            # Calculate cosine similarity (simplified)
+            similarities = cosine_similarity(user_vector, table_vectors)[0]
+        else:
+            # User profile from interactions
+            user_vector = user_profile.values.reshape(1, -1)
+            table_vectors = self.table_features_scaled[table_feature_cols].values
+            similarities = cosine_similarity(user_vector, table_vectors)[0]
+
+        # Create recommendations dataframe
+        recommendations_df = pd.DataFrame({
+            'table_id': self.table_features_scaled['table_id'],
+            'similarity': similarities
+        })
+
+        if exclude_seen:
+            # Exclude seen tables
+            seen_tables = interaction_data[interaction_data['user_id'] == user_id]['table_id'].unique()
+            recommendations_df = recommendations_df[~recommendations_df['table_id'].isin(seen_tables)]
+
+        # Sort by similarity and return top N
+        top_recommendations = recommendations_df.nlargest(n_recommendations, 'similarity')
+        return list(top_recommendations['table_id'])
+
+# Train content-based model
+cb_recommender = ContentBasedRecommender()
+cb_recommender.fit(user_features, table_features)
+
+print("✅ Content-Based Filtering model trained!")
+
+# Test the model
+cb_recommendations = cb_recommender.recommend(test_user, interaction_data, n_recommendations=5)
+print(f"\n🔍 CB Recommendations for user {test_user}:")
+for i, table_id in enumerate(cb_recommendations, 1):
+    table_info = tables_df[tables_df['table_id'] == table_id].iloc[0]
+    print(f"{i}. {table_id} - {table_info['location']} ({table_info['capacity']} seats, {table_info['ambiance']})")
