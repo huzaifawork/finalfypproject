@@ -4,7 +4,7 @@ const config = {
     API_BASE_URL: 'http://localhost:8080',
   },
   production: {
-    API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://your-backend-url.vercel.app',
+    API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://finalfypproject-git-main-huzaifas-projects-eabfae35.vercel.app',
   }
 };
 
