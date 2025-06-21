@@ -97,7 +97,7 @@ const Profile = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:8080/api/user/profile", {
+        const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -119,20 +119,20 @@ const Profile = () => {
       setStatsLoading(true);
 
       // Fetch reservations
-      const reservationsResponse = await axios.get("http://localhost:8080/api/reservations/user", {
+      const reservationsResponse = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/user", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const reservations = reservationsResponse.data || [];
 
       // Fetch orders
-      const ordersResponse = await axios.get("http://localhost:8080/api/orders", {
+      const ordersResponse = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders", {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: 100 }
       });
       const orders = ordersResponse.data?.orders || [];
 
       // Fetch bookings
-      const bookingsResponse = await axios.get("http://localhost:8080/api/bookings/user", {
+      const bookingsResponse = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/user", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const bookings = bookingsResponse.data || [];
@@ -183,11 +183,11 @@ const Profile = () => {
 
       // Fetch food history and interactions
       const [foodHistoryResponse, foodInteractionsResponse] = await Promise.allSettled([
-        axios.get(`http://localhost:8080/api/food-recommendations/history/${userId}`, {
+        axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/food-recommendations/history/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { days: 30 }
         }),
-        axios.get("http://localhost:8080/api/orders", {
+        axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders", {
           headers: { Authorization: `Bearer ${token}` },
           params: { limit: 100 }
         })
@@ -195,22 +195,22 @@ const Profile = () => {
 
       // Fetch room history and interactions
       const [roomHistoryResponse, roomBookingsResponse] = await Promise.allSettled([
-        axios.get(`http://localhost:8080/api/rooms/history/${userId}`, {
+        axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/history/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { days: 30 }
         }),
-        axios.get("http://localhost:8080/api/bookings/user", {
+        axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/user", {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
 
       // Fetch table history and interactions
       const [tableHistoryResponse, tableReservationsResponse] = await Promise.allSettled([
-        axios.get(`http://localhost:8080/api/tables/history/${userId}`, {
+        axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables/history/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { days: 30 }
         }),
-        axios.get("http://localhost:8080/api/reservations/user", {
+        axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/user", {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -310,7 +310,7 @@ const Profile = () => {
 
     try {
       await axios.put(
-        "http://localhost:8080/api/user/profile",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/profile",
         { name: user.name, email: user.email, phone: user.phone },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -341,7 +341,7 @@ const Profile = () => {
 
     try {
       await axios.put(
-        "http://localhost:8080/api/user/password",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/password",
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -45,7 +45,7 @@ const RoomRecommendationAnalytics = () => {
 
   const fetchMLMetrics = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/rooms/ml/accuracy');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/ml/accuracy');
       if (response.data.success) {
         setMlMetrics(response.data);
       }
@@ -56,7 +56,7 @@ const RoomRecommendationAnalytics = () => {
 
   const fetchConfusionMatrix = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/rooms/ml/confusion-matrix');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/ml/confusion-matrix');
       if (response.data.success) {
         setConfusionMatrix(response.data);
       }
@@ -67,7 +67,7 @@ const RoomRecommendationAnalytics = () => {
 
   const fetchSystemStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/rooms/ml/status');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/ml/status');
       if (response.data.success) {
         setSystemStatus(response.data);
       }

@@ -50,8 +50,8 @@ const AdminOrders = () => {
         return;
       }
 
-      console.log('Making request to:', 'http://localhost:8080/api/orders');
-      const response = await axios.get('http://localhost:8080/api/orders', {
+      console.log('Making request to:', 'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -159,7 +159,7 @@ const AdminOrders = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:8080/api/orders/${orderId}/status`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders/${orderId}/status`,
         { status: newStatus },
         {
           headers: {

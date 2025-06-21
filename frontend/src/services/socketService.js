@@ -1,132 +1,113 @@
 // src/services/socketService.js
 import io from 'socket.io-client';
+import { API_BASE_URL } from '../config/api';
 
-const SOCKET_SERVER = "http://localhost:8080";
+const SOCKET_SERVER = API_BASE_URL; // Use the same backend URL for socket connection
 
 let socketInstance = null;
 let activeCallbacks = new Set();
 let activeOrderId = null;
 
-export const initializeSocket = (orderId) => {
-  if (!orderId) {
-    console.error('[Socket] No order ID provided');
-    return null;
-  }
-
-  // If already tracking this order with an active socket, return it
-  if (socketInstance && socketInstance.connected && activeOrderId === orderId) {
-    console.log('[Socket] Already tracking order:', orderId);
-    return socketInstance;
-  }
-  
-  // Clean up any existing socket
+// Initialize socket connection
+export const initializeSocket = (token) => {
   if (socketInstance) {
-    console.log('[Socket] Cleaning up existing socket');
-    cleanupSocket();
+    socketInstance.disconnect();
   }
 
-  // Store order ID and create new socket
-  activeOrderId = orderId;
-  console.log('[Socket] Creating new connection for order:', orderId);
+  console.log('🔌 Connecting to socket server:', SOCKET_SERVER);
   
   socketInstance = io(SOCKET_SERVER, {
-    transports: ["websocket", "polling"],
-    reconnection: true,
-    timeout: 10000
+    auth: {
+      token: token
+    },
+    transports: ['websocket', 'polling'],
+    timeout: 20000,
+    forceNew: true
   });
 
-  // Set up event handlers
   socketInstance.on('connect', () => {
-    console.log('[Socket] Connected to server');
-    
-    // Start tracking once connected
-    socketInstance.emit('trackOrder', { orderId });
-    console.log('[Socket] Tracking request sent for order:', orderId);
+    console.log('✅ Socket connected:', socketInstance.id);
   });
 
-  socketInstance.on('disconnect', () => {
-    console.log('[Socket] Disconnected from server');
+  socketInstance.on('disconnect', (reason) => {
+    console.log('❌ Socket disconnected:', reason);
   });
 
-  socketInstance.on('error', (error) => {
-    console.error('[Socket] Error:', error);
-  });
-
-  // Handle order updates
-  socketInstance.on('orderUpdate', (data) => {
-    console.log('[Socket] Received update:', data);
-    
-    // Only process updates for the order we're tracking
-    if (data.orderId === activeOrderId) {
-      activeCallbacks.forEach(callback => {
-        try {
-          callback(data);
-        } catch (error) {
-          console.error('[Socket] Error in callback:', error);
-        }
-      });
-    }
+  socketInstance.on('connect_error', (error) => {
+    console.error('🔌 Socket connection error:', error);
   });
 
   return socketInstance;
 };
 
-const cleanupSocket = () => {
+// Join order room for real-time updates
+export const joinOrderRoom = (orderId, callback) => {
+  if (!socketInstance) {
+    console.error('Socket not initialized');
+    return;
+  }
+
+  activeOrderId = orderId;
+  activeCallbacks.add(callback);
+
+  console.log('🏠 Joining order room:', orderId);
+  socketInstance.emit('joinOrderRoom', orderId);
+
+  // Listen for order updates
+  socketInstance.on('orderStatusUpdate', (data) => {
+    console.log('📦 Order status update received:', data);
+    activeCallbacks.forEach(cb => cb(data));
+  });
+
+  socketInstance.on('deliveryLocationUpdate', (data) => {
+    console.log('📍 Delivery location update:', data);
+    activeCallbacks.forEach(cb => cb(data));
+  });
+};
+
+// Leave order room
+export const leaveOrderRoom = (orderId, callback) => {
+  if (!socketInstance) return;
+
+  console.log('🚪 Leaving order room:', orderId);
+  socketInstance.emit('leaveOrderRoom', orderId);
+  
+  if (callback) {
+    activeCallbacks.delete(callback);
+  }
+
+  // Clean up listeners if no more callbacks
+  if (activeCallbacks.size === 0) {
+    socketInstance.off('orderStatusUpdate');
+    socketInstance.off('deliveryLocationUpdate');
+    activeOrderId = null;
+  }
+};
+
+// Disconnect socket
+export const disconnectSocket = () => {
   if (socketInstance) {
-    socketInstance.removeAllListeners();
+    console.log('🔌 Disconnecting socket');
     socketInstance.disconnect();
     socketInstance = null;
+    activeCallbacks.clear();
+    activeOrderId = null;
   }
 };
 
-export const disconnectSocket = () => {
-  console.log('[Socket] Disconnecting socket');
-  cleanupSocket();
-  activeCallbacks.clear();
-  activeOrderId = null;
+// Get socket instance
+export const getSocket = () => socketInstance;
+
+// Check if socket is connected
+export const isSocketConnected = () => {
+  return socketInstance && socketInstance.connected;
 };
 
-export const subscribeToOrderUpdates = (callback) => {
-  if (!callback || typeof callback !== 'function') {
-    console.error('[Socket] Invalid callback');
-    return () => {};
-  }
-
-  activeCallbacks.add(callback);
-  console.log('[Socket] Added update subscription');
-  
-  return () => {
-    activeCallbacks.delete(callback);
-    console.log('[Socket] Removed update subscription');
-  };
-};
-
-export const formatTimestamp = (timestamp) => {
-  if (!timestamp) return '';
-  
-  try {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch (error) {
-    return '';
-  }
-};
-
-export const formatEstimatedDelivery = (timestamp) => {
-  if (!timestamp) return '30 minutes';
-  
-  try {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch (error) {
-    return '30 minutes';
-  }
+export default {
+  initializeSocket,
+  joinOrderRoom,
+  leaveOrderRoom,
+  disconnectSocket,
+  getSocket,
+  isSocketConnected
 };

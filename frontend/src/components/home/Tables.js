@@ -11,7 +11,7 @@ const TablesSection = () => {
   useEffect(() => {
     const fetchTables = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/tables");
+        const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables");
         setTables(response.data.filter(table => table.status === "Available"));
       } catch (error) {
         setError("Failed to load tables. Please try again later.");
@@ -58,7 +58,7 @@ const TablesSection = () => {
                   <div className="card-image">
                     {table.image && (
                       <img
-                        src={`http://localhost:8080${table.image}`}
+                        src={`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${table.image}`}
                         alt={table.tableName}
                         loading="lazy"
                       />

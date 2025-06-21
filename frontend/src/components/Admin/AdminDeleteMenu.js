@@ -37,7 +37,7 @@ const AdminDeleteMenu = () => {
       }
 
       console.log("Fetching menu items...");
-      const response = await axios.get("http://localhost:8080/api/menus", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -85,7 +85,7 @@ const AdminDeleteMenu = () => {
 
       console.log("Deleting menu item:", selectedItem._id);
 
-      const response = await axios.delete(`http://localhost:8080/api/menus/${selectedItem._id}`, {
+      const response = await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${selectedItem._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -146,7 +146,7 @@ const AdminDeleteMenu = () => {
                     item.image
                       ? (item.image.startsWith('http://') || item.image.startsWith('https://'))
                         ? item.image
-                        : `http://localhost:8080${item.image}`
+                        : `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${item.image}`
                       : "/placeholder-food.jpg"
                   }
                   alt={item.name}

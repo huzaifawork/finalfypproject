@@ -28,8 +28,8 @@ const AdminViewMenus = () => {
     setLoading(true);
     try {
       const url = selectedCategory === "all"
-        ? "http://localhost:8080/api/menus"
-        : `http://localhost:8080/api/menus/category/${selectedCategory}`;
+        ? "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus"
+        : `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/category/${selectedCategory}`;
       
       const response = await axios.get(url);
       setMenuItems(response.data);
@@ -42,7 +42,7 @@ const AdminViewMenus = () => {
 
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/menus/${id}`);
+      await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${id}`);
       setMenuItems(menuItems.filter(item => item._id !== id));
       toast.success("Menu item deleted successfully");
       setShowDeleteModal(false);
@@ -53,7 +53,7 @@ const AdminViewMenus = () => {
 
   const handleAvailabilityToggle = async (id, currentStatus) => {
     try {
-      const response = await axios.patch(`http://localhost:8080/api/menus/${id}/toggle-availability`);
+      const response = await axios.patch(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${id}/toggle-availability`);
       setMenuItems(menuItems.map(item => item._id === id ? response.data : item));
       toast.success("Availability updated successfully");
     } catch (error) {
@@ -71,9 +71,9 @@ const AdminViewMenus = () => {
       // If it's a local upload path
       const cleanPath = imagePath.replace(/^\/+/, '');
       if (cleanPath.includes('uploads')) {
-        return `http://localhost:8080/${cleanPath}`;
+        return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`;
       }
-      return `http://localhost:8080/uploads/${cleanPath}`;
+      return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error('Error formatting image URL:', error);
       return '/images/placeholder-menu.jpg';

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { FaStar } from 'react-icons/fa';
 import { FiHeart, FiThumbsUp, FiMessageSquare } from 'react-icons/fi';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app';
 
 // Enhanced sentiment word lists with weights
 const sentimentWords = {

@@ -25,7 +25,7 @@ const MyBookings = () => {
     try {
       setLoading(true);
       // Fetch bookings with additional user details
-      const response = await axios.get("http://localhost:8080/api/bookings/user", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/user", {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -34,7 +34,7 @@ const MyBookings = () => {
       // Try to get the current user's information, but don't fail if it's not available
       let userProfileData = {};
       try {
-        const userProfile = await axios.get("http://localhost:8080/api/user/profile", {
+        const userProfile = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/profile", {
           headers: { Authorization: `Bearer ${token}` }
         });
         userProfileData = userProfile.data;
@@ -103,7 +103,7 @@ const MyBookings = () => {
         return;
       }
       
-      await axios.delete(`http://localhost:8080/api/bookings/${bookingId}`, {
+      await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/${bookingId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

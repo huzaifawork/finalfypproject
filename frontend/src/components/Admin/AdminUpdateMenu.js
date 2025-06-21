@@ -39,7 +39,7 @@ const AdminUpdateMenu = () => {
   const fetchMenuItems = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/menus", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -70,7 +70,7 @@ const AdminUpdateMenu = () => {
       if (item.image.startsWith('http://') || item.image.startsWith('https://')) {
         setImagePreview(item.image);
       } else {
-        setImagePreview(`http://localhost:8080${item.image}`);
+        setImagePreview(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${item.image}`);
       }
     } else {
       setImagePreview(null);
@@ -120,7 +120,7 @@ const AdminUpdateMenu = () => {
         }
       });
 
-      await axios.put(`http://localhost:8080/api/menus/${selectedItem._id}`, submitData, {
+      await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${selectedItem._id}`, submitData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -176,7 +176,7 @@ const AdminUpdateMenu = () => {
                       item.image
                         ? (item.image.startsWith('http://') || item.image.startsWith('https://'))
                           ? item.image
-                          : `http://localhost:8080${item.image}`
+                          : `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${item.image}`
                         : "/placeholder-food.jpg"
                     }
                     alt={item.name}

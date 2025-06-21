@@ -111,7 +111,7 @@ const MenuOrder = () => {
     React.useEffect(() => {
         const fetchMenuItems = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/menu');
+                const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menu');
                 setMenuItems(response.data);
             } catch (err) {
                 setError('Failed to fetch menu items');
@@ -190,7 +190,7 @@ const MenuOrder = () => {
                 paymentMethodId: paymentMethodId
             };
 
-            const response = await axios.post('http://localhost:8080/api/orders', orderData, {
+            const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders', orderData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

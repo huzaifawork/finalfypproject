@@ -51,7 +51,7 @@ export default function Dashboardmodule() {
         console.log("🔄 Fetching dashboard analytics...");
 
         // Fetch comprehensive analytics data from backend
-        const analyticsResponse = await axios.get("http://localhost:8080/api/admin/dashboard/analytics", {
+        const analyticsResponse = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/admin/dashboard/analytics", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -65,19 +65,19 @@ export default function Dashboardmodule() {
         // Also fetch individual data for detailed processing
         const requests = [
           // Rooms data
-          axios.get("http://localhost:8080/api/rooms", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms", {
             headers: { Authorization: `Bearer ${token}` },
           }),
           // Food orders data - get ALL orders for admin dashboard
-          axios.get("http://localhost:8080/api/orders?limit=1000", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders?limit=1000", {
             headers: { Authorization: `Bearer ${token}` },
           }),
           // Menu items for food analytics
-          axios.get("http://localhost:8080/api/menus", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus", {
             headers: { Authorization: `Bearer ${token}` },
           }),
           // Room bookings data
-          axios.get("http://localhost:8080/api/bookings", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings", {
             headers: { Authorization: `Bearer ${token}` },
           }).catch(error => {
             console.error("🏨 Bookings API Error:", error.response?.data || error.message);
@@ -85,15 +85,15 @@ export default function Dashboardmodule() {
             return { data: [] }; // Return empty array on error
           }),
           // Table reservations data
-          axios.get("http://localhost:8080/api/table-reservations", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/table-reservations", {
             headers: { Authorization: `Bearer ${token}` },
           }).catch(() => ({ data: [] })),
           // Tables data
-          axios.get("http://localhost:8080/api/tables", {
+          axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables", {
             headers: { Authorization: `Bearer ${token}` },
           }).catch(() => ({ data: [] })),
         // Recommendation system evaluation
-        axios.get("http://localhost:8080/api/food-recommendations/evaluation/system?testPeriodDays=7", {
+        axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/food-recommendations/evaluation/system?testPeriodDays=7", {
           headers: { Authorization: `Bearer ${token}` },
         }).catch(() => ({ data: { success: false } })),
         ];
@@ -677,7 +677,7 @@ export default function Dashboardmodule() {
                 onClick={async () => {
                   try {
                     const token = localStorage.getItem("token");
-                    const response = await axios.get("http://localhost:8080/api/bookings/test", {
+                    const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/test", {
                       headers: { Authorization: `Bearer ${token}` }
                     });
                     console.log("🧪 Booking Test Result:", response.data);
@@ -697,7 +697,7 @@ export default function Dashboardmodule() {
                 onClick={async () => {
                   try {
                     const token = localStorage.getItem("token");
-                    const response = await axios.get("http://localhost:8080/api/bookings/db-check", {
+                    const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/db-check", {
                       headers: { Authorization: `Bearer ${token}` }
                     });
                     console.log("🔍 DB Check Result:", response.data);

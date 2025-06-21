@@ -42,7 +42,7 @@ const MyBookings = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:8080/api/bookings/user", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/user", {
         headers: { Authorization: `Bearer ${token}` }
       });
 

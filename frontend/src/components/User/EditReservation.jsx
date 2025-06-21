@@ -36,7 +36,7 @@ const EditReservation = ({ reservationId, onClose, onSuccess }) => {
         
         console.log("Fetching reservation with ID:", reservationId);
         
-        const response = await axios.get(`http://localhost:8080/api/reservations/${reservationId}`, {
+        const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/${reservationId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -154,7 +154,7 @@ const EditReservation = ({ reservationId, onClose, onSuccess }) => {
       setAvailability({ ...availability, isChecking: true });
       
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:8080/api/tables/availability`, {
+      const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables/availability`, {
         params: {
           reservationDate: formData.reservationDate,
           time: formData.time,
@@ -226,7 +226,7 @@ const EditReservation = ({ reservationId, onClose, onSuccess }) => {
       }
       
       const response = await axios.put(
-        `http://localhost:8080/api/reservations/${reservationId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/${reservationId}`,
         {
           reservationDate: formData.reservationDate,
           time: formData.time,

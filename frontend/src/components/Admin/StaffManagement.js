@@ -100,7 +100,7 @@ const StaffManagement = () => {
   const fetchStaff = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/staff", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStaff(response.data);
@@ -132,7 +132,7 @@ const StaffManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:8080/api/staff",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff",
         newStaff,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -167,7 +167,7 @@ const StaffManagement = () => {
     if (window.confirm("Are you sure you want to delete this staff member?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:8080/api/staff/${id}`, {
+        await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStaff(staff.filter(member => member._id !== id));

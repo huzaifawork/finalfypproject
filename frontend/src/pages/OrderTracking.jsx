@@ -177,7 +177,7 @@ const OrderTracking = () => {
         console.log("Using token:", token ? "Yes (Token exists)" : "No (Token missing)");
         
         const response = await axios.get(
-          `http://localhost:8080/api/orders/${validOrderId}`,
+          `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders/${validOrderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -550,7 +550,7 @@ const OrderTracking = () => {
                 </div>
                 <div className="socket-info-row">
                   <span className="socket-label">Server:</span>
-                  <span className="socket-value">http://localhost:8080</span>
+                  <span className="socket-value">https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app</span>
                 </div>
               </div>
               

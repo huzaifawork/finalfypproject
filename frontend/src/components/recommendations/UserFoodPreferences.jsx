@@ -64,7 +64,7 @@ const UserFoodPreferences = ({ userId = null, onPreferencesUpdate }) => {
       setLoading(true);
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:8080/api/users/${currentUserId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/users/${currentUserId}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -98,7 +98,7 @@ const UserFoodPreferences = ({ userId = null, onPreferencesUpdate }) => {
       const token = localStorage.getItem('token');
       
       await axios.put(
-        `http://localhost:8080/api/users/${currentUserId}/preferences`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/users/${currentUserId}/preferences`,
         { foodPreferences: preferences },
         {
           headers: { Authorization: `Bearer ${token}` }

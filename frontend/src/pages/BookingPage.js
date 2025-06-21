@@ -119,8 +119,8 @@ const BookingPage = () => {
       if (imagePath.startsWith('http')) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, '');
       return cleanPath.includes('uploads') 
-        ? `http://localhost:8080/${cleanPath}`
-        : `http://localhost:8080/uploads/${cleanPath}`;
+        ? `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`
+        : `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error('Error formatting image URL:', error);
       return '/images/placeholder-room.jpg';
@@ -151,14 +151,14 @@ const BookingPage = () => {
         setError(null);
 
         // Fetch room details
-        const roomResponse = await axios.get('http://localhost:8080/api/rooms', {
+        const roomResponse = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         // Fetch user profile data to pre-fill the form
-        const userResponse = await axios.get('http://localhost:8080/api/user/profile', {
+        const userResponse = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/profile', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -363,7 +363,7 @@ const BookingPage = () => {
         numberOfNights: bookingSummary.nights
       };
 
-      const response = await axios.post('http://localhost:8080/api/bookings', bookingData, {
+      const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings', bookingData, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

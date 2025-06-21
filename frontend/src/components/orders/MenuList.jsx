@@ -13,7 +13,7 @@ const MenuList = ({ addToCart }) => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/menu");
+        const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menu");
         setMenu(response.data);
         setLoading(false);
       } catch (err) {

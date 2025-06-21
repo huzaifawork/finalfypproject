@@ -61,7 +61,7 @@ const AdminAddTable = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:8080/api/tables', formData, {
+      const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

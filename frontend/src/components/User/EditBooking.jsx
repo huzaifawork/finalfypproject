@@ -42,7 +42,7 @@ const EditBooking = ({ bookingId, onClose, onSuccess }) => {
         
         console.log("Fetching booking with ID:", bookingId);
         
-        const response = await axios.get(`http://localhost:8080/api/bookings/${bookingId}`, {
+        const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/${bookingId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -59,7 +59,7 @@ const EditBooking = ({ bookingId, onClose, onSuccess }) => {
 
         // Fetch room details
         console.log("Fetching room details for roomId:", bookingData.roomId);
-        const roomResponse = await axios.get(`http://localhost:8080/api/rooms/${bookingData.roomId}`, {
+        const roomResponse = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/${bookingData.roomId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -160,7 +160,7 @@ const EditBooking = ({ bookingId, onClose, onSuccess }) => {
       setAvailability({ ...availability, isChecking: true });
       
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:8080/api/rooms/availability`, {
+      const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/availability`, {
         params: {
           checkInDate: formData.checkInDate,
           checkOutDate: formData.checkOutDate,
@@ -232,7 +232,7 @@ const EditBooking = ({ bookingId, onClose, onSuccess }) => {
       }
       
       const response = await axios.put(
-        `http://localhost:8080/api/bookings/${bookingId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/${bookingId}`,
         {
           checkInDate: formData.checkInDate,
           checkOutDate: formData.checkOutDate,

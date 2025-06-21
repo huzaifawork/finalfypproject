@@ -13,7 +13,7 @@ const MenuItemModal = ({ item, onClose, addToCart }) => {
         <div className="modal-body">
           {item.image && (
             <img 
-              src={`http://localhost:8080${item.image}`} 
+              src={`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${item.image}`} 
               alt={item.name} 
               className="modal-image"
             />

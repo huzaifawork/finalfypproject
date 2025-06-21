@@ -38,7 +38,7 @@ const AdminViewTables = () => {
   const fetchTables = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api/tables");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables");
       console.log("Fetched tables:", response.data);
       setTables(response.data);
       setFilteredTables(response.data);
@@ -217,7 +217,7 @@ const AdminViewTables = () => {
                   <div key={table._id} className={`enhanced-table-card ${viewMode}-card`}>
                     <div className="table-image-container">
                       <img
-                        src={table.image ? `http://localhost:8080${table.image}` : "/images/placeholder-table.jpg"}
+                        src={table.image ? `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${table.image}` : "/images/placeholder-table.jpg"}
                         alt={`Table ${table.tableNumber || table.tableName}`}
                         className="table-image"
                         onError={(e) => {

@@ -30,7 +30,7 @@ const UserProfileManagement = () => {
         }, 2000);
         return;
       }
-      const response = await axios.get("http://localhost:8080/api/admin/users", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -73,7 +73,7 @@ const UserProfileManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:8080/api/admin/users/${editUser._id}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/admin/users/${editUser._id}`,
         editUser,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -91,7 +91,7 @@ const UserProfileManagement = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.delete(
-          `http://localhost:8080/api/admin/users/${userId}`,
+          `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/admin/users/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         toast.success(response.data.message || "User deleted successfully");
@@ -106,7 +106,7 @@ const UserProfileManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.patch(
-        `http://localhost:8080/api/admin/users/${userId}/toggle-status`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/admin/users/${userId}/toggle-status`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -17,7 +17,7 @@ const RoomDetailsModal = ({ room, onClose }) => {
 
       try {
         await axios.post(
-          'http://localhost:8080/api/rooms/interactions',
+          'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/interactions',
           {
             userId,
             roomId: room._id,
@@ -45,9 +45,9 @@ const RoomDetailsModal = ({ room, onClose }) => {
       if (imagePath.startsWith('http')) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, '');
       if (cleanPath.includes('uploads')) {
-        return `http://localhost:8080/${cleanPath}`;
+        return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`;
       }
-      return `http://localhost:8080/uploads/${cleanPath}`;
+      return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error('Error formatting image URL:', error);
       return '/images/placeholder-room.jpg';
@@ -191,7 +191,7 @@ const RoomDetailsModal = ({ room, onClose }) => {
                 const userId = localStorage.getItem('userId');
                 if (token && userId) {
                   axios.post(
-                    'http://localhost:8080/api/rooms/interactions',
+                    'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/interactions',
                     {
                       userId,
                       roomId: room._id,

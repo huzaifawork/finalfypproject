@@ -40,7 +40,7 @@ const MyReservations = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8080/api/reservations/user", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/user", {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log("Raw response data:", response.data); // Debug log
@@ -106,7 +106,7 @@ const MyReservations = () => {
     
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:8080/api/reservations/${reservationId}`, {
+      await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/${reservationId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

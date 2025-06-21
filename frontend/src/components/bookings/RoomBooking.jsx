@@ -115,7 +115,7 @@ const RoomBooking = () => {
     React.useEffect(() => {
         const fetchRoomDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/rooms/${roomId}`);
+                const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/${roomId}`);
                 setRoom(response.data);
             } catch (err) {
                 setError('Failed to fetch room details');
@@ -181,7 +181,7 @@ const RoomBooking = () => {
                 paymentMethodId: paymentMethodId
             };
 
-            const response = await axios.post('http://localhost:8080/api/bookings', bookingData, {
+            const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings', bookingData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

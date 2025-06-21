@@ -23,7 +23,7 @@ const ModernCard = ({
       return placeholders[type] || placeholders.food;
     }
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8080${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`;
+    return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`;
   };
 
   const getAmenityIcon = (amenity) => {

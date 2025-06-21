@@ -54,7 +54,7 @@ const TableConfirmationPage = () => {
           }
 
           const response = await axios.get(
-            `http://localhost:8080/api/reservations/${reservationId}`,
+            `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/reservations/${reservationId}`,
             {
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -93,7 +93,7 @@ const TableConfirmationPage = () => {
       if (!token) return;
 
       const userResponse = await axios.get(
-        `http://localhost:8080/api/user/profile`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/user/profile`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,

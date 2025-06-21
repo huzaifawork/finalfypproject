@@ -6,6 +6,7 @@ import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import PageLayout from '../components/layout/PageLayout';
+import { API_BASE_URL } from '../config/api';
 import './TableReservationPage.css';
 
 // Initialize Stripe
@@ -113,8 +114,8 @@ const TableReservationPage = () => {
       if (imagePath.startsWith("http")) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, "");
       return cleanPath.includes("uploads")
-        ? `http://localhost:8080/${cleanPath}`
-        : `http://localhost:8080/uploads/${cleanPath}`;
+        ? `${API_BASE_URL}/${cleanPath}`
+        : `${API_BASE_URL}/uploads/${cleanPath}`;
     } catch (error) {
       console.error("Error formatting image URL:", error);
       return "/images/placeholder-table.jpg";
@@ -203,7 +204,7 @@ const TableReservationPage = () => {
       
       setAvailability({ ...availability, isChecking: true });
       
-      const response = await axios.get(`http://localhost:8080/api/tables/availability`, {
+      const response = await axios.get(`${API_BASE_URL}/api/tables/availability`, {
         params: {
           reservationDate: formData.date,
           time: formData.time,
@@ -291,7 +292,7 @@ const TableReservationPage = () => {
 
       console.log("Sending reservation data:", reservationData);
 
-      const response = await axios.post('http://localhost:8080/api/reservations', reservationData, {
+      const response = await axios.post(`${API_BASE_URL}/api/reservations`, reservationData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -302,7 +303,7 @@ const TableReservationPage = () => {
         try {
           const userId = localStorage.getItem('userId');
           if (userId && tableDetails.tableId) {
-            await axios.post('http://localhost:8080/api/tables/track-reservation', {
+            await axios.post(`${API_BASE_URL}/api/tables/track-reservation`, {
               tableId: tableDetails.tableId,
               reservationId: response.data.reservation._id,
               userId: userId
@@ -591,4 +592,4 @@ const TableReservationPage = () => {
   );
 };
 
-export default TableReservationPage; 
+export default TableReservationPage;

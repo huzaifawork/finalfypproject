@@ -91,7 +91,7 @@ const RecommendationCard = ({
     if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
       return imagePath;
     }
-    return `http://localhost:8080${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`;
+    return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`;
   };
 
   return (

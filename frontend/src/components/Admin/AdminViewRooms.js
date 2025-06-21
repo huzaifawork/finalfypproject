@@ -40,7 +40,7 @@ const AdminViewRooms = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/rooms", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRooms(response.data);
@@ -59,7 +59,7 @@ const AdminViewRooms = () => {
 
   const fetchPopularRooms = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/rooms/popular?count=10");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/popular?count=10");
       if (response.data.success) {
         setPopularRooms(response.data.popularRooms);
       }
@@ -83,9 +83,9 @@ const AdminViewRooms = () => {
       if (imagePath.startsWith('http')) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, '');
       if (cleanPath.includes('uploads')) {
-        return `http://localhost:8080/${cleanPath}`;
+        return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`;
       }
-      return `http://localhost:8080/uploads/${cleanPath}`;
+      return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error('Error formatting image URL:', error);
       return '/images/placeholder-room.jpg';

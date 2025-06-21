@@ -22,7 +22,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8080/api/orders");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders");
       setOrders(response.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -33,7 +33,7 @@ const AdminOrders = () => {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      await axios.put(`http://localhost:8080/api/orders/${orderId}/status`, { status });
+      await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders/${orderId}/status`, { status });
       // Update local state immediately for better UX
       setOrders(prevOrders => 
         prevOrders.map(order => 

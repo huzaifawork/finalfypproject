@@ -28,7 +28,7 @@ const AdminUpdateTable = () => {
 
   const fetchTables = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/tables");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables");
       setTables(response.data);
     } catch (error) {
       console.error("Error fetching tables:", error);
@@ -70,7 +70,7 @@ const AdminUpdateTable = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:8080/api/tables/${selectedTable._id}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables/${selectedTable._id}`,
         data,
         {
           headers: { 

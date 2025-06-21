@@ -46,7 +46,7 @@ const AdminRoomUpdate = () => {
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8080/api/rooms", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -110,7 +110,7 @@ const AdminRoomUpdate = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "/images/placeholder-room.jpg";
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8080${imagePath}`;
+    return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${imagePath}`;
   };
 
   const handleSubmit = async (e) => {
@@ -136,7 +136,7 @@ const AdminRoomUpdate = () => {
     }
 
     try {
-      await axios.put(`http://localhost:8080/api/rooms/${selectedRoom._id}`, data, {
+      await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/${selectedRoom._id}`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",

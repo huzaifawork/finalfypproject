@@ -22,7 +22,7 @@ const BookForm = ({ room, onClose, refreshBookings }) => {
     try {
       setAvailability({ ...availability, isChecking: true });
       
-      const response = await axios.get(`http://localhost:8080/api/rooms/availability`, {
+      const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/availability`, {
         params: {
           checkInDate: checkIn,
           checkOutDate: checkOut
@@ -105,7 +105,7 @@ const BookForm = ({ room, onClose, refreshBookings }) => {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/bookings",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings",
         {
           roomId: room._id,
           roomType: room.roomType,

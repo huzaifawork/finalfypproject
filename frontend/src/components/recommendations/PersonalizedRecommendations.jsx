@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL, buildApiUrl } from '../../config/api';
 import { Container, Spinner, Badge } from 'react-bootstrap';
 import { FiRefreshCw, FiUser, FiStar, FiZap } from 'react-icons/fi';
 import RecommendationCard from './RecommendationCard';
@@ -7,6 +8,7 @@ import './PersonalizedRecommendations.css';
 
 const PersonalizedRecommendations = ({
   userId = null,
+  userPreferences = null,
   showHeader = true,
   className = '',
   onAddToCart,
@@ -68,7 +70,7 @@ const PersonalizedRecommendations = ({
       // Fallback: Get menu items and create a limited popular selection
       try {
         console.log('🔄 Fetching all menu items as fallback...');
-        const menuResponse = await fetch('http://localhost:8080/api/menus');
+        const menuResponse = await fetch('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus');
         const menuData = await menuResponse.json();
 
         console.log('📊 Fetched menu data:', menuData?.length || 0, 'items');
@@ -137,8 +139,6 @@ const PersonalizedRecommendations = ({
             reason: 'popularity',
             confidence: 'medium'
           }));
-
-
 
         return {
           success: true,
@@ -234,7 +234,7 @@ const PersonalizedRecommendations = ({
           // For "All Menu" tab, load ALL menu items
           try {
             console.log('Loading all menu items...');
-            const menuResponse = await fetch('http://localhost:8080/api/menus');
+            const menuResponse = await fetch('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus');
             const menuData = await menuResponse.json();
             console.log('Menu items loaded:', menuData.length);
             response = {
@@ -331,6 +331,135 @@ const PersonalizedRecommendations = ({
         // Set empty but don't leave user with nothing
         setError('Unable to load menu items. Please refresh the page.');
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRecommendations = async (type) => {
+    try {
+      setLoading(true);
+      let response;
+
+      switch (type) {
+        case 'personalized':
+          if (!userId) {
+            console.log('No user ID available for personalized recommendations');
+            return;
+          }
+          
+          try {
+            console.log('🎯 Fetching personalized recommendations...');
+            response = await fetch(buildApiUrl(`/api/food-recommendations/recommendations/${userId}?count=8`));
+            const data = await response.json();
+            
+            if (data.success && data.recommendations?.length > 0) {
+              console.log('✅ Personalized recommendations loaded:', data.recommendations.length);
+              return {
+                success: true,
+                recommendations: data.recommendations,
+                type: 'personalized'
+              };
+            }
+          } catch (error) {
+            console.log('❌ Personalized recommendations failed, trying popular...');
+          }
+          
+          // Fallback to popular
+          response = await fetch(buildApiUrl('/api/food-recommendations/popular?count=8'));
+          break;
+
+        case 'popular':
+          console.log('🔥 Fetching popular recommendations...');
+          response = await fetch(buildApiUrl('/api/food-recommendations/popular?count=8'));
+          break;
+
+        case 'pakistani':
+          console.log('🇵🇰 Fetching Pakistani cuisine recommendations...');
+          const endpoint = userId 
+            ? `/api/food-recommendations/pakistani-recommendations/${userId}?count=8`
+            : '/api/food-recommendations/pakistani-recommendations/guest?count=8';
+          response = await fetch(buildApiUrl(endpoint));
+          break;
+
+        case 'allmenu':
+          // For "All Menu" tab, load ALL menu items
+          try {
+            console.log('Loading all menu items...');
+            const menuResponse = await fetch(buildApiUrl('/api/menus'));
+            const menuData = await menuResponse.json();
+            console.log('Menu items loaded:', menuData.length);
+            response = {
+              success: true,
+              recommendations: menuData.map(item => ({
+                menuItem: item,
+                score: item.rating || 4.0,
+                reason: 'All Menu Items'
+              }))
+            };
+          } catch (error) {
+            console.error('Error loading menu items:', error);
+            response = { success: false, recommendations: [] };
+          }
+          break;
+
+        default:
+          // Fallback: Get menu items and create a limited popular selection
+          try {
+            console.log('🔄 Fetching all menu items as fallback...');
+            const menuResponse = await fetch(buildApiUrl('/api/menus'));
+            const menuData = await menuResponse.json();
+
+            console.log('📊 Fetched menu data:', menuData?.length || 0, 'items');
+
+            if (menuData && menuData.length > 0) {
+              // Create popular recommendations from menu items
+              const popularItems = menuData
+                .sort((a, b) => (b.rating || 4.0) - (a.rating || 4.0))
+                .slice(0, 8)
+                .map(item => ({
+                  menuItem: item,
+                  score: item.rating || 4.0,
+                  reason: 'Popular Choice'
+                }));
+
+              response = {
+                success: true,
+                recommendations: popularItems
+              };
+            } else {
+              response = { success: false, recommendations: [] };
+            }
+          } catch (error) {
+            console.error('Fallback failed:', error);
+            response = { success: false, recommendations: [] };
+          }
+      }
+
+      if (response && response.success) {
+        const items = response.recommendations || response.popularItems || [];
+        console.log('Setting recommendations:', items.length, 'items');
+        setOriginalRecommendations(items);
+        setRecommendations(items);
+
+        // Store algorithm info for display
+        if (response.algorithmBreakdown) {
+          setAlgorithmInfo(response.algorithmBreakdown);
+        }
+
+        // Store user stats if available
+        if (response.userStats) {
+          setUserStats(response.userStats);
+        }
+
+        // Clear any previous errors
+        setError(null);
+      } else {
+        throw new Error(response?.message || 'Failed to load recommendations');
+      }
+    } catch (err) {
+      console.error('❌ Error fetching recommendations:', err);
+      setError(err.message || 'Failed to load recommendations');
     } finally {
       setLoading(false);
     }

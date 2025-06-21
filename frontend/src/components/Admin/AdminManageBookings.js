@@ -38,7 +38,7 @@ const AdminManageBookings = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/bookings", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings", {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ const AdminManageBookings = () => {
       
       const deleteToast = toast.loading("Deleting booking...");
       
-      const response = await axios.delete(`http://localhost:8080/api/bookings/${bookingId}`, {
+      const response = await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/bookings/${bookingId}`, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

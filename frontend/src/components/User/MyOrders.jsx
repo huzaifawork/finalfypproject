@@ -51,7 +51,7 @@ const MyOrders = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `http://localhost:8080/api/orders/${orderId}/status`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders/${orderId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -93,7 +93,7 @@ const MyOrders = () => {
       
       console.log("Fetching orders with token:", token ? "Present" : "Missing");
       
-      const response = await axios.get(`http://localhost:8080/api/orders`, {
+      const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders`, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ const MyOrders = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://localhost:8080/api/orders/${orderId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders/${orderId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       fetchOrders();

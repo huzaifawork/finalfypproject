@@ -23,7 +23,7 @@ ChartJS.register(
   ArcElement
 );
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app';
 
 const SentimentAnalysis = () => {
   const [analytics, setAnalytics] = useState(null);

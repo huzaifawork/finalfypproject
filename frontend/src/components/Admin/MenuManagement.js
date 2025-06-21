@@ -27,8 +27,8 @@ const MenuManagement = () => {
     setLoading(true);
     try {
       const url = selectedCategory === "all"
-        ? "http://localhost:8080/api/menus"
-        : `http://localhost:8080/api/menus/category/${selectedCategory}`;
+        ? "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus"
+        : `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/category/${selectedCategory}`;
       
       const response = await axios.get(url);
       setMenuItems(response.data);
@@ -74,7 +74,7 @@ const MenuManagement = () => {
         formData.append("image", image);
       }
 
-      const response = await axios.post("http://localhost:8080/api/menus", formData, {
+      const response = await axios.post("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -116,7 +116,7 @@ const MenuManagement = () => {
         formData.append("image", image);
       }
 
-      const response = await axios.put(`http://localhost:8080/api/menus/${id}`, formData, {
+      const response = await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -138,7 +138,7 @@ const MenuManagement = () => {
     if (window.confirm("Are you sure you want to delete this menu item?")) {
       setLoading(true);
       try {
-        await axios.delete(`http://localhost:8080/api/menus/${id}`);
+        await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${id}`);
         setMenuItems(menuItems.filter(item => item._id !== id));
         toast.success("Menu item deleted successfully");
       } catch (error) {
@@ -151,7 +151,7 @@ const MenuManagement = () => {
 
   const handleAvailabilityToggle = async (id, currentStatus) => {
     try {
-      const response = await axios.patch(`http://localhost:8080/api/menus/${id}/toggle-availability`);
+      const response = await axios.patch(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus/${id}/toggle-availability`);
       setMenuItems(menuItems.map(item => item._id === id ? response.data : item));
       toast.success("Availability updated successfully");
     } catch (error) {
@@ -162,7 +162,7 @@ const MenuManagement = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "https://via.placeholder.com/150";
     if (imagePath.startsWith("http")) return imagePath;
-    return `http://localhost:8080${imagePath}`;
+    return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${imagePath}`;
   };
 
   return (

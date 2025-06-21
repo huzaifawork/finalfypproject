@@ -26,7 +26,7 @@ export default function OrderFood() {
     useEffect(() => {
         const fetchMenuItems = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/menus');
+                const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus');
                 setMenuItems(response.data);
                 setFilteredItems(response.data);
                 

@@ -27,7 +27,7 @@ const ShiftManagement = () => {
   const fetchShifts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:8080/api/shift?date=${selectedDate}`, {
+      const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift?date=${selectedDate}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setShifts(response.data);
@@ -41,7 +41,7 @@ const ShiftManagement = () => {
   const fetchStaff = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/staff", {
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStaff(response.data);
@@ -55,7 +55,7 @@ const ShiftManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:8080/api/shift/add",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/add",
         newShift,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -79,7 +79,7 @@ const ShiftManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.patch(
-        `http://localhost:8080/api/shift/${shiftId}/toggle`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/${shiftId}/toggle`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ const ShiftManagement = () => {
     if (window.confirm("Are you sure you want to delete this shift?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:8080/api/shift/${shiftId}`, {
+        await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/${shiftId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setShifts(shifts.filter(shift => shift._id !== shiftId));

@@ -87,7 +87,7 @@ const AdminAddMenu = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:8080/api/menus",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus",
         submitData,
         {
           headers: {

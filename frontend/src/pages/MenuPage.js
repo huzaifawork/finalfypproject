@@ -24,7 +24,7 @@ const MenuPage = () => {
 
   const fetchMenuData = async () => {
     try {
-      const menuResponse = await axios.get('http://localhost:8080/api/menus');
+      const menuResponse = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/menus');
       setMenuItems(menuResponse.data);
 
       // Extract unique categories from menu items
@@ -83,7 +83,7 @@ const MenuPage = () => {
 
   const addToCart = async (itemId) => {
     try {
-      await axios.post('http://localhost:8080/api/cart', { itemId });
+      await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/cart', { itemId });
       // Show success notification
     } catch (error) {
       // Show error notification

@@ -23,7 +23,7 @@ const RecommendationEvaluation = () => {
                 }
             };
 
-            const response = await axios.get(`http://localhost:8080/api/food-recommendations/evaluation/system?testPeriodDays=${selectedPeriod}`, config);
+            const response = await axios.get(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/food-recommendations/evaluation/system?testPeriodDays=${selectedPeriod}`, config);
             if (response.data.success) {
                 setEvaluation(response.data.systemEvaluation);
             } else {

@@ -27,7 +27,7 @@ const AdminDeleteRoom = () => {
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8080/api/rooms");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms");
       setRooms(response.data);
     } catch (error) {
       console.error("Error fetching rooms:", error);
@@ -43,9 +43,9 @@ const AdminDeleteRoom = () => {
       if (imagePath.startsWith('http')) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, '');
       if (cleanPath.includes('uploads')) {
-        return `http://localhost:8080/${cleanPath}`;
+        return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`;
       }
-      return `http://localhost:8080/uploads/${cleanPath}`;
+      return `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error('Error formatting image URL:', error);
       return '/images/placeholder-room.jpg';
@@ -61,7 +61,7 @@ const AdminDeleteRoom = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://localhost:8080/api/rooms/${roomId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/rooms/${roomId}`,
         {
           headers: { 
             Authorization: `Bearer ${token}`,

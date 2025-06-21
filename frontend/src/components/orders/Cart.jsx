@@ -65,7 +65,7 @@ const PaymentForm = ({ onPaymentSuccess, totalPrice, onCancel, cart }) => {
 
       // Send the payment method ID to your server
       const response = await axios.post(
-        'http://localhost:8080/api/payment/menu-payment',
+        'https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/payment/menu-payment',
         {
           amount: totalPrice,
           currency: 'pkr',
@@ -416,7 +416,7 @@ export default function Cart() {
       console.log('Sending order data:', orderData); // Debug log
 
       const response = await axios.post(
-        "http://localhost:8080/api/orders",
+        "https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/orders",
         orderData,
         { 
           headers: { 

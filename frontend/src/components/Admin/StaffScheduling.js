@@ -24,7 +24,7 @@ const StaffScheduling = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('http://localhost:8080/api/staff');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff');
       setStaff(response.data);
     } catch (error) {
       setError('Error fetching staff.');
@@ -37,7 +37,7 @@ const StaffScheduling = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get('http://localhost:8080/api/shift');
+      const response = await axios.get('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift');
       setShifts(response.data);
     } catch (error) {
       setError('Error fetching shifts.');
@@ -54,7 +54,7 @@ const StaffScheduling = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://localhost:8080/api/staff/add', newStaff);
+      const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff/add', newStaff);
       setStaff([...staff, response.data]);
       setNewStaff({ name: '', position: '' });
       setFeedback({ type: 'success', message: 'Staff added successfully!' });
@@ -78,7 +78,7 @@ const StaffScheduling = () => {
         setFeedback({ type: 'danger', message: 'A shift for this staff member on this date already exists.' });
         return;
       }
-      const response = await axios.post('http://localhost:8080/api/shift/add', newShift);
+      const response = await axios.post('https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/add', newShift);
       setShifts([...shifts, response.data]);
       setNewShift({ staffId: '', date: '', time: '', duration: '' });
       setFeedback({ type: 'success', message: 'Shift added successfully!' });
@@ -92,7 +92,7 @@ const StaffScheduling = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.put(`http://localhost:8080/api/shift/${id}/toggle`);
+      const response = await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/${id}/toggle`);
       setShifts(shifts.map(shift => (shift._id === id ? response.data : shift)));
     } catch (error) {
       setError('Error toggling attendance.');
@@ -106,7 +106,7 @@ const StaffScheduling = () => {
       setLoading(true);
       setError('');
       try {
-        await axios.delete(`http://localhost:8080/api/shift/${id}`);
+        await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/shift/${id}`);
         setShifts(shifts.filter(shift => shift._id !== id));
         setFeedback({ type: 'success', message: 'Shift deleted successfully!' });
       } catch (error) {
@@ -122,7 +122,7 @@ const StaffScheduling = () => {
       setLoading(true);
       setError('');
       try {
-        await axios.delete(`http://localhost:8080/api/staff/${id}`);
+        await axios.delete(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff/${id}`);
         setStaff(staff.filter(s => s._id !== id));
         await fetchShifts();
         setFeedback({ type: 'success', message: 'Staff and associated shifts deleted successfully!' });
@@ -142,7 +142,7 @@ const StaffScheduling = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.put(`http://localhost:8080/api/staff/${selectedStaff._id}`, selectedStaff);
+      const response = await axios.put(`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/staff/${selectedStaff._id}`, selectedStaff);
       setStaff(staff.map(s => (s._id === selectedStaff._id ? response.data : s)));
       setShifts(shifts.map(shift => 
         shift.staffId._id === selectedStaff._id 

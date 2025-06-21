@@ -16,7 +16,7 @@ const AdminDeleteTable = () => {
 
   const fetchTables = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/tables");
+      const response = await axios.get("https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables");
       setTables(response.data);
     } catch (error) {
       console.error("Error fetching tables:", error);
@@ -33,7 +33,7 @@ const AdminDeleteTable = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:8080/api/tables/${tableId}`,
+        `https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app/api/tables/${tableId}`,
         {
           headers: { 
             Authorization: `Bearer ${token}`,
@@ -108,7 +108,7 @@ const AdminDeleteTable = () => {
                     <td>
                       {table.image && (
                         <img
-                          src={`http://localhost:8080${table.image}`}
+                          src={`https://finalfypproject-k248prfl1-huzaifas-projects-eabfae35.vercel.app${table.image}`}
                           alt={table.tableName}
                           className="cosmic-table-image"
                         />
