@@ -18,7 +18,6 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "PORT": "@port",
     "GOOGLE_CLIENT_ID": "@google_client_id",
     "GOOGLE_CLIENT_SECRET": "@google_client_secret",
     "Mongo_Conn": "@mongo_conn",
