@@ -1,6 +1,10 @@
-// src/hooks/useDeliveryTracking.js
 import { useEffect, useState } from 'react';
-import { initializeSocket, disconnectSocket, subscribeToOrderUpdates } from '../services/socketService';
+import {
+  initializeSocket,
+  disconnectSocket,
+  joinOrderRoom,
+  leaveOrderRoom,
+} from '../services/socketService';
 
 const useDeliveryTracking = (orderId) => {
   const [orderStatus, setOrderStatus] = useState('Connecting...');
@@ -10,28 +14,23 @@ const useDeliveryTracking = (orderId) => {
   useEffect(() => {
     if (!orderId) return;
 
-    const socket = initializeSocket(orderId);
-    
-    // Emit the trackOrder event to trigger backend updates
-    socket.emit("trackOrder", { orderId });
+    const socket = initializeSocket(localStorage.getItem('token'));
 
-    // Use the subscription method from socketService
-    const unsubscribe = subscribeToOrderUpdates((data) => {
-      console.log('Order update received:', data);
+    const handleOrderUpdate = (data) => {
       if (data.orderId === orderId) {
         setOrderStatus(data.status);
-        
-        // Mock a delivery location update for map animation
+
         if (data.status !== 'Order Received' && data.status !== 'Delivered') {
-          // Create random movement around the initial location
           const randomOffset = () => (Math.random() - 0.5) * 0.01;
           setDeliveryLocation({
             lng: 73.2100 + randomOffset(),
-            lat: 34.1600 + randomOffset()
+            lat: 34.1600 + randomOffset(),
           });
         }
       }
-    });
+    };
+
+    joinOrderRoom(orderId, handleOrderUpdate);
 
     socket.on('connect_error', (err) => {
       setSocketError('Connection error. Trying to reconnect...');
@@ -39,7 +38,7 @@ const useDeliveryTracking = (orderId) => {
     });
 
     return () => {
-      unsubscribe(); // Clean up the subscription
+      leaveOrderRoom(orderId, handleOrderUpdate);
       socket.off('connect_error');
       disconnectSocket();
     };

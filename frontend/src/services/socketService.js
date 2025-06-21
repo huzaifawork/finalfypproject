@@ -1,8 +1,7 @@
-// src/services/socketService.js
 import io from 'socket.io-client';
 import { API_BASE_URL } from '../config/api';
 
-const SOCKET_SERVER = API_BASE_URL; // Use the same backend URL for socket connection
+const SOCKET_SERVER = API_BASE_URL;
 
 let socketInstance = null;
 let activeCallbacks = new Set();
@@ -15,11 +14,9 @@ export const initializeSocket = (token) => {
   }
 
   console.log('🔌 Connecting to socket server:', SOCKET_SERVER);
-  
+
   socketInstance = io(SOCKET_SERVER, {
-    auth: {
-      token: token
-    },
+    auth: { token },
     transports: ['websocket', 'polling'],
     timeout: 20000,
     forceNew: true
@@ -53,7 +50,6 @@ export const joinOrderRoom = (orderId, callback) => {
   console.log('🏠 Joining order room:', orderId);
   socketInstance.emit('joinOrderRoom', orderId);
 
-  // Listen for order updates
   socketInstance.on('orderStatusUpdate', (data) => {
     console.log('📦 Order status update received:', data);
     activeCallbacks.forEach(cb => cb(data));
@@ -71,12 +67,11 @@ export const leaveOrderRoom = (orderId, callback) => {
 
   console.log('🚪 Leaving order room:', orderId);
   socketInstance.emit('leaveOrderRoom', orderId);
-  
+
   if (callback) {
     activeCallbacks.delete(callback);
   }
 
-  // Clean up listeners if no more callbacks
   if (activeCallbacks.size === 0) {
     socketInstance.off('orderStatusUpdate');
     socketInstance.off('deliveryLocationUpdate');
@@ -101,13 +96,4 @@ export const getSocket = () => socketInstance;
 // Check if socket is connected
 export const isSocketConnected = () => {
   return socketInstance && socketInstance.connected;
-};
-
-export default {
-  initializeSocket,
-  joinOrderRoom,
-  leaveOrderRoom,
-  disconnectSocket,
-  getSocket,
-  isSocketConnected
 };
