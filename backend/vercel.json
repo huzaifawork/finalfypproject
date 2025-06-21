@@ -1,34 +1,15 @@
 {
   "version": 2,
-  "name": "hrms-backend",
   "builds": [
     {
       "src": "index.serverless.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.serverless.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://finalfypproject-ne6o-h90xms3hc-huzaifas-projects-eabfae35.vercel.app",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      }
+      "dest": "/index.serverless.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "GOOGLE_CLIENT_ID": "@google_client_id",
-    "GOOGLE_CLIENT_SECRET": "@google_client_secret",
-    "Mongo_Conn": "@mongo_conn",
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "STRIPE_SECRET_KEY": "@stripe_secret_key"
-  }
+  ]
 }
