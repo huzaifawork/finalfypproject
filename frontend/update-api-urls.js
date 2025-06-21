@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Your backend URL after deployment
-const BACKEND_URL = 'https://your-backend-url.vercel.app'; // UPDATE THIS!
+const BACKEND_URL = 'https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app'; // UPDATED
 
 // Files that need URL updates
 const filesToUpdate = [

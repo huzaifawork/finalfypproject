@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/api';
 
 // Create axios instance with default config
 const api = axios.create({

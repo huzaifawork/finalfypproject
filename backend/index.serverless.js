@@ -32,7 +32,7 @@ const app = express();
 
 // CORS Setup for Vercel
 const corsOptions = {
-  origin: "*",  // Configure this with your frontend domain
+  origin: ["https://finalfypproject-ne6o-h90xms3hc-huzaifas-projects-eabfae35.vercel.app", "http://localhost:3000"],  // Frontend domain and local development
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,

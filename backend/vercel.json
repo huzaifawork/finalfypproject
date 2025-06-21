@@ -13,7 +13,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.serverless.js"
+      "dest": "/index.serverless.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://finalfypproject-ne6o-h90xms3hc-huzaifas-projects-eabfae35.vercel.app",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
+        "Access-Control-Allow-Credentials": "true"
+      }
     }
   ],
   "env": {

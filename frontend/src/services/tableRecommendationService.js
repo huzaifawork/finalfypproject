@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -223,8 +223,8 @@ export const tableUtils = {
       if (imagePath.startsWith("http")) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, "");
       return cleanPath.includes("uploads")
-        ? `http://localhost:8080/${cleanPath}`
-        : `http://localhost:8080/uploads/${cleanPath}`;
+        ? `https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/${cleanPath}`
+        : `https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/uploads/${cleanPath}`;
     } catch (error) {
       console.error("Error formatting image URL:", error);
       return "/images/placeholder-table.jpg";

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/orders"; // Backend URL
+const API_URL = "https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/api/orders"; // Backend URL
 
 // ✅ Fetch menu items (from admin-side menus)
 export const fetchMenuItems = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/menus");
+    const response = await axios.get("https://finalfypproject-ly9tb7oa1-huzaifas-projects-eabfae35.vercel.app/api/menus");
     return response.data;
   } catch (error) {
     console.error("Error fetching menu:", error);
