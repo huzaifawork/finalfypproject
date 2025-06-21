@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { FiUsers, FiMapPin, FiClock, FiInfo, FiStar, FiTarget, FiShoppingCart, FiEye } from "react-icons/fi";
 import { tableRecommendationService, tableUtils } from "../../services/tableRecommendationService";
+import { API_BASE_URL } from "../../config/api";
 
 const TableReservation = () => {
   const [tables, setTables] = useState([]);
@@ -26,7 +27,8 @@ const TableReservation = () => {
   const fetchTables = async () => {
     try {
       // Always fetch regular tables first as fallback
-      const tablesResponse = await axios.get("http://localhost:8080/api/tables");
+      console.log('Fetching tables from:', `${API_BASE_URL}/api/tables`);
+      const tablesResponse = await axios.get(`${API_BASE_URL}/api/tables`);
       console.log('Fetched tables:', tablesResponse.data);
 
       if (tablesResponse.data && tablesResponse.data.length > 0) {
@@ -449,148 +451,3 @@ const TableReservation = () => {
                         <span style={{
                           fontSize: '0.65rem',
                           color: 'rgba(255, 255, 255, 0.9)',
-                          fontWeight: '600',
-                          textAlign: 'center'
-                        }}>
-                          {table.capacity || 4} Seats
-                        </span>
-                      </div>
-
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        padding: '0.5rem',
-                        backgroundColor: 'rgba(100, 255, 218, 0.08)',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(100, 255, 218, 0.15)'
-                      }}>
-                        <FiMapPin size={14} style={{ color: '#64ffda' }} />
-                        <span style={{
-                          fontSize: '0.65rem',
-                          color: 'rgba(255, 255, 255, 0.9)',
-                          fontWeight: '600',
-                          textAlign: 'center'
-                        }}>
-                          {table.location || 'Premium'}
-                        </span>
-                      </div>
-
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        padding: '0.5rem',
-                        backgroundColor: 'rgba(255, 107, 157, 0.08)',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(255, 107, 157, 0.15)'
-                      }}>
-                        <FiClock size={14} style={{ color: '#ff6b9d' }} />
-                        <span style={{
-                          fontSize: '0.65rem',
-                          color: 'rgba(255, 255, 255, 0.9)',
-                          fontWeight: '600',
-                          textAlign: 'center'
-                        }}>
-                          {table.ambiance || 'Cozy'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      display: 'flex',
-                      gap: '0.5rem',
-                      marginTop: '0.5rem'
-                    }}>
-                      <Link
-                        to="/reserve-table"
-                        style={{
-                          flex: 1,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #bb86fc 0%, #64ffda 100%)',
-                          color: '#0a0a0a',
-                          textDecoration: 'none',
-                          borderRadius: '0.75rem',
-                          fontWeight: '600',
-                          fontSize: '0.8rem',
-                          transition: 'all 0.3s ease',
-                          border: 'none',
-                          boxShadow: '0 4px 15px rgba(187, 134, 252, 0.3)',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
-                        }}
-                        onClick={() => recordInteraction(table._id, 'inquiry')}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(187, 134, 252, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 4px 15px rgba(187, 134, 252, 0.3)';
-                        }}
-                      >
-                        <FiShoppingCart size={14} />
-                        Reserve
-                      </Link>
-
-                      <Link
-                        to={`/table-details/${table._id}`}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '0.75rem',
-                          border: '1px solid rgba(187, 134, 252, 0.4)',
-                          color: '#bb86fc',
-                          textDecoration: 'none',
-                          borderRadius: '0.75rem',
-                          transition: 'all 0.3s ease',
-                          backgroundColor: 'rgba(187, 134, 252, 0.08)',
-                          backdropFilter: 'blur(10px)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(187, 134, 252, 0.15)';
-                          e.currentTarget.style.borderColor = '#bb86fc';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(187, 134, 252, 0.08)';
-                          e.currentTarget.style.borderColor = 'rgba(187, 134, 252, 0.4)';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }}
-                      >
-                        <FiEye size={16} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-        {currentTables.length === 0 && (
-          <div style={{
-            textAlign: 'center',
-            padding: '3rem 0',
-            color: 'rgba(255, 255, 255, 0.6)'
-          }}>
-            <FiInfo size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#fff' }}>
-              No tables available
-            </h3>
-            <p>Please check back later or try different filters.</p>
-          </div>
-        )}
-      </div>
-    </section>
-    </>
-  );
-};
-
-export default TableReservation;

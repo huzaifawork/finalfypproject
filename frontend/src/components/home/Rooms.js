@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiStar, FiWifi, FiCoffee, FiTv, FiHeart, FiTrendingUp, FiShoppingCart, FiEye } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Rooms = () => {
@@ -20,8 +21,8 @@ const Rooms = () => {
       if (imagePath.startsWith("http")) return imagePath;
       const cleanPath = imagePath.replace(/^\/+/, "");
       return cleanPath.includes("uploads")
-        ? `http://localhost:8080/${cleanPath}`
-        : `http://localhost:8080/uploads/${cleanPath}`;
+        ? `${API_BASE_URL}/${cleanPath}`
+        : `${API_BASE_URL}/uploads/${cleanPath}`;
     } catch (error) {
       console.error("Error formatting image URL:", error);
       return "/images/placeholder-room.jpg";
@@ -46,8 +47,8 @@ const Rooms = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/rooms");
-
+        console.log('Fetching rooms from:', `${API_BASE_URL}/api/rooms`);
+        const response = await axios.get(`${API_BASE_URL}/api/rooms`);
         setRooms(response.data);
       } catch (error) {
         setError("Failed to load rooms. Please try again.");
@@ -64,7 +65,7 @@ const Rooms = () => {
   useEffect(() => {
     const fetchPopularRooms = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/rooms/popular?count=6');
+        const response = await axios.get(`${API_BASE_URL}/api/rooms/popular?count=6`);
         if (response.data.success) {
           console.log('Fetched popular rooms:', response.data.popularRooms.length, response.data.popularRooms);
           setPopularRooms(response.data.popularRooms);
@@ -84,7 +85,7 @@ const Rooms = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/rooms/recommendations/${user.id}?count=6`,
+          `${API_BASE_URL}/api/rooms/recommendations/${user.id}?count=6`,
           {
             headers: { Authorization: `Bearer ${user.token}` }
           }
@@ -170,12 +171,8 @@ const Rooms = () => {
     );
   };
 
-
-
   const currentRooms = getCurrentRooms();
   const visibleRooms = currentRooms; // Show all 3 without sliding
-
-
 
   return (
     <>
