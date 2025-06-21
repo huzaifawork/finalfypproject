@@ -98,7 +98,7 @@ export const isSocketConnected = () => {
   return socketInstance && socketInstance.connected;
 };
 
-// Format estimated delivery time as HH:MM AM/PM
+// Format estimated delivery time
 export const formatEstimatedDelivery = (date) => {
   const options = {
     hour: 'numeric',
@@ -108,7 +108,13 @@ export const formatEstimatedDelivery = (date) => {
   return new Date(date).toLocaleTimeString([], options);
 };
 
-// ✅ You may also need to define this if you're calling it elsewhere
+// Format timestamp for timeline entries
+export const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+// Subscribe to order updates
 export const subscribeToOrderUpdates = (callback) => {
   if (!socketInstance) {
     console.error('Socket not initialized');
